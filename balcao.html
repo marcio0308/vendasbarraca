@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Balcão - FoodFlow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        :root {
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #111827;
+            --text-secondary: #6b7280;
+            --border: #e5e7eb;
+            --primary: #FF6B35;
+            --success: #059669;
+            --danger: #dc2626;
+            --warning: #f59e0b;
+        }
+
+        body {
+            background: var(--bg);
+            padding: 16px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .palavra-display {
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            transition: all 0.3s;
+        }
+
+        .palavra-display.divergente {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: var(--danger);
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%,100%{transform:translateX(0);}
+            25%{transform:translateX(-5px);}
+            75%{transform:translateX(5px);}
+        }
+
+        .section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            font-size: 17px;
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            background: var(--bg);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        .status {
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .status.success {
+            background: #f0fdf4;
+            color: var(--success);
+            border: 1px solid #86efac;
+            display: block;
+        }
+
+        .status.error {
+            background: #fef2f2;
+            color: var(--danger);
+            border: 1px solid #fecaca;
+            display: block;
+        }
+
+        .pedido-detalhe {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .pedido-detalhe.show {
+            display: block;
+        }
+
+        .pedido-items {
+            margin: 12px 0;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏪 FoodFlow - Balcão</h1>
+            <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">Palavra-Chave do Evento</div>
+            <div class="palavra-display" id="palavraAtual">CARREGANDO...</div>
+        </div>
+
+        <div class="section">
+            <h2>🔐 Verificar e Confirmar Pagamento</h2>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Peça para o cliente mostrar o comprovante e digite a palavra-chave que aparece nele.</p>
+            <label>🔑 Palavra-Chave do Cliente</label>
+            <input type="text" id="palavraCliente" placeholder="Ex: FOODFLOW-1234" autocomplete="off">
+            <button class="btn" onclick="verificarEConfirmar()">✅ Confirmar Pagamento</button>
+            <div class="status" id="statusVerificacao"></div>
+            <div class="pedido-detalhe" id="pedidoDetalhe">
+                <h3>📋 Detalhes do Pedido</h3>
+                <div id="detalhesPedido"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔄 Alterar Palavra-Chave Base</h2>
+            <label>Nova Palavra-Chave</label>
+            <input type="text" id="novaPalavra" placeholder="Digite a nova palavra base">
+            <button class="btn" onclick="alterarPalavra()">Alterar</button>
+            <div class="status" id="statusAlteracao"></div>
+        </div>
+
+        <div class="section">
+            <h2>📊 Pedidos Aguardando Pagamento</h2>
+            <div id="listaPendentes" style="max-height:300px;overflow-y:auto;"></div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEYS = {
+            CONFIG: 'configFeira',
+            ORDERS: 'evento_pedidos'
+        };
+
+        let CONFIG = JSON.parse(localStorage.getItem(STORAGE_KEYS.CONFIG) || '{}');
+
+        function init() {
+            atualizarPalavraExibida();
+            carregarPendentes();
+        }
+
+        function atualizarPalavraExibida() {
+            const palavra = CONFIG.palavraChave || 'NÃO DEFINIDA';
+            document.getElementById('palavraAtual').textContent = palavra;
+        }
+
+        function carregarPendentes() {
+            const pedidos = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
+            const pendentes = pedidos.filter(p => p.status === 'awaiting_payment');
+            const container = document.getElementById('listaPendentes');
+            
+            console.log('Pedidos pendentes encontrados:', pendentes.length);
+            
+            if (pendentes.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:var(--text-secondary);padding:20px;">Nenhum pedido aguardando</p>';
+                return;
+            }
+            
+            container.innerHTML = pendentes.map(p => `
+                <div style="background:#f0f0f0;border-radius:12px;padding:12px;margin-bottom:8px;border-left:3px solid var(--warning);">
+                    <strong>${p.orderId}</strong> - ${p.customerName}<br>
+                    <small>💰 R$ ${p.total.toFixed(2)} • ${p.items.length} itens</small><br>
+                    <small>🔑 ${p.palavraChave}</small>
+                    <small>💳 ${p.metodoPagamento === 'pix' ? 'PIX' : p.metodoPagamento === 'dinheiro' ? 'Dinheiro' : 'Cartão'}</small>
+                </div>
+            `).join('');
+        }
+
+        function verificarEConfirmar() {
+            const palavraCliente = document.getElementById('palavraCliente').value.trim().toUpperCase();
+            const statusDiv = document.getElementById('statusVerificacao');
+            const detalheDiv = document.getElementById('pedidoDetalhe');
+            
+            if (!palavraCliente) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = 'Digite a palavra-chave do cliente';
+                return;
+            }
+            
+            const pedidos = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
+            console.log('Buscando palavra:', palavraCliente);
+            console.log('Pedidos disponíveis:', pedidos.map(p => ({ orderId: p.orderId, palavra: p.palavraChave, status: p.status })));
+            
+            const pedidoEncontrado = pedidos.find(p => p.palavraChave?.toUpperCase() === palavraCliente && p.status === 'awaiting_payment');
+            
+            if (pedidoEncontrado) {
+                // Atualizar status para 'paid'
+                pedidoEncontrado.status = 'paid';
+                pedidoEncontrado.paidAt = new Date().toISOString();
+                localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(pedidos));
+                
+                console.log('Pedido confirmado:', pedidoEncontrado);
+                
+                // Mostrar detalhes
+                const itemsHtml = pedidoEncontrado.items.map(i => 
+                    `<div>${i.emoji || '🍽️'} ${i.qty}x ${i.name} — R$ ${(i.price * i.qty).toFixed(2)}</div>`
+                ).join('');
+                
+                let metodoTexto = '';
+                if (pedidoEncontrado.metodoPagamento === 'pix') metodoTexto = '💳 PIX';
+                else if (pedidoEncontrado.metodoPagamento === 'dinheiro') metodoTexto = '💵 Dinheiro';
+                else if (pedidoEncontrado.metodoPagamento === 'cartao') metodoTexto = '💳 Cartão';
+                
+                document.getElementById('detalhesPedido').innerHTML = `
+                    <div class="pedido-items">
+                        <strong>Pedido: ${pedidoEncontrado.orderId}</strong><br>
+                        <strong>Cliente:</strong> ${pedidoEncontrado.customerName}<br>
+                        <strong>Pagamento:</strong> ${metodoTexto}<br>
+                        <strong>Itens:</strong><br>
+                        ${itemsHtml}
+                        <strong style="font-size:16px;">Total: R$ ${pedidoEncontrado.total.toFixed(2)}</strong>
+                    </div>
+                `;
+                detalheDiv.classList.add('show');
+                
+                statusDiv.className = 'status success';
+                statusDiv.textContent = `✅ Pagamento confirmado para ${pedidoEncontrado.customerName}! Pedido enviado para a cozinha.`;
+                document.getElementById('palavraCliente').value = '';
+                
+                carregarPendentes();
+                
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                
+                setTimeout(() => {
+                    detalheDiv.classList.remove('show');
+                }, 8000);
+            } else {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ PALAVRA INVÁLIDA - Verifique o comprovante ou este pedido já foi pago!';
+                document.getElementById('palavraAtual').classList.add('divergente');
+                setTimeout(() => {
+                    document.getElementById('palavraAtual').classList.remove('divergente');
+                }, 3000);
+                if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+            }
+            
+            setTimeout(() => {
+                statusDiv.className = 'status';
+            }, 5000);
+        }
+
+        function alterarPalavra() {
+            const novaPalavra = document.getElementById('novaPalavra').value.trim();
+            const statusDiv = document.getElementById('statusAlteracao');
+            
+            if (!novaPalavra) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = 'Digite uma nova palavra-chave';
+                return;
+            }
+            
+            CONFIG.palavraChave = novaPalavra;
+            localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(CONFIG));
+            document.getElementById('novaPalavra').value = '';
+            atualizarPalavraExibida();
+            
+            statusDiv.className = 'status success';
+            statusDiv.textContent = 'Palavra-chave alterada com sucesso!';
+            
+            setTimeout(() => {
+                statusDiv.className = 'status';
+            }, 3000);
+        }
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === STORAGE_KEYS.CONFIG) {
+                CONFIG = JSON.parse(localStorage.getItem(STORAGE_KEYS.CONFIG) || '{}');
+                atualizarPalavraExibida();
+            }
+            if (e.key === STORAGE_KEYS.ORDERS) {
+                carregarPendentes();
+            }
+        });
+
+        init();
+        setInterval(carregarPendentes, 5000);
+    </script>
+</body>
+</html>

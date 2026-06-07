@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#FF6B35">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>FoodFlow - Cardápio Digital</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #1a1a2e;
+            --text-light: #6c757d;
+            --border: #e9ecef;
+            --primary: #FF6B35;
+            --primary-dark: #e55a2b;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            padding-bottom: 85px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 12px;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 800px;
+            }
+        }
+
+        .header {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 12px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .icon-btn:active {
+            transform: scale(0.94);
+            background: var(--border);
+        }
+
+        .cart-btn {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 10px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cart-btn.has-items {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .badge {
+            background: var(--primary);
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 50px;
+            font-weight: 700;
+        }
+
+        .cart-btn.has-items .badge {
+            background: white;
+            color: var(--primary);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 14px;
+        }
+
+        @media (min-width: 500px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 18px;
+            }
+        }
+
+        .produto-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        .produto-card:active {
+            transform: scale(0.97);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .produto-imagem {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            background: linear-gradient(135deg, #f5f5f5, #e8e8e8);
+            display: block;
+        }
+
+        .produto-info {
+            padding: 12px;
+        }
+
+        .produto-info h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .produto-descricao {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .produto-preco {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            border-radius: 28px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: modalEntrada 0.3s ease;
+        }
+
+        @keyframes modalEntrada {
+            from {
+                opacity: 0;
+                transform: scale(0.92) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-img {
+            width: 100%;
+            aspect-ratio: 16/10;
+            object-fit: cover;
+            background: #e9ecef;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-body h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .modal-preco {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 12px 0;
+        }
+
+        .qtd-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .qtd-btn {
+            background: var(--bg);
+            border: 2px solid var(--border);
+            width: 52px;
+            height: 52px;
+            border-radius: 26px;
+            font-size: 26px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .qtd-btn:active {
+            background: var(--border);
+            transform: scale(0.92);
+        }
+
+        .qtd-numero {
+            font-size: 34px;
+            font-weight: 700;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .total-box {
+            background: var(--bg);
+            border-radius: 18px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .total-box .label {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .total-box .valor {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:active {
+            background: var(--primary-dark);
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--border);
+            width: 100%;
+            padding: 14px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: all 0.2s;
+        }
+
+        .btn-success:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .payment-btn {
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 60px;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .payment-btn:active {
+            transform: scale(0.97);
+            background: var(--border);
+        }
+
+        .payment-btn.pix {
+            background: #e8f5e9;
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .payment-btn.cash {
+            background: #fff3e0;
+            border-color: var(--warning);
+            color: #856404;
+        }
+
+        .payment-btn.card {
+            background: #e3f2fd;
+            border-color: var(--info);
+            color: #0c5460;
+        }
+
+        .cart-summary {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            padding: 16px 20px;
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            z-index: 500;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-summary.visible {
+            transform: translateY(0);
+        }
+
+        .cart-summary-content {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cart-info {
+            flex: 1;
+        }
+
+        .cart-info .count {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .cart-info .total {
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .btn-cart {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 2000;
+            white-space: nowrap;
+            animation: toastAnim 0.25s ease;
+            box-shadow: var(--shadow-lg);
+        }
+
+        @keyframes toastAnim {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            align-items: center;
+        }
+
+        .cart-item-img {
+            width: 55px;
+            height: 55px;
+            border-radius: 14px;
+            object-fit: cover;
+            background: #e9ecef;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .cart-item-price {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .cart-item-qtd {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qtd-mini-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-light);
+        }
+
+        .comprovante {
+            background: #e8f5e9;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .palavra-chave {
+            background: white;
+            border: 2px dashed var(--primary);
+            padding: 12px;
+            border-radius: 14px;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin: 12px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 id="barracaNome">FoodFlow</h1>
+            <div class="header-buttons">
+                <button class="icon-btn" id="refreshBtn" onclick="atualizarDados()" title="Atualizar">⟳</button>
+                <button class="cart-btn" id="cartBtn" onclick="abrirCarrinho()">
+                    🛒 Carrinho
+                    <span class="badge" id="cartCount">0</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="grid" id="produtosGrid"></div>
+    </div>
+
+    <!-- Modal Quantidade -->
+    <div class="modal-overlay" id="modalQuantidade">
+        <div class="modal">
+            <img class="modal-img" id="modalImg" src="" alt="Produto">
+            <div class="modal-body">
+                <h2 id="modalNome"></h2>
+                <p id="modalDescricao" style="color:var(--text-light);font-size:14px;"></p>
+                <div class="modal-preco" id="modalPrecoUnitario"></div>
+                
+                <div class="qtd-selector">
+                    <button class="qtd-btn" onclick="alterarQtd(-1)">−</button>
+                    <span class="qtd-numero" id="qtdNumero">1</span>
+                    <button class="qtd-btn" onclick="alterarQtd(1)">+</button>
+                </div>
+                
+                <div class="total-box">
+                    <div class="label">Valor Total</div>
+                    <div class="valor" id="totalValor">R$ 0,00</div>
+                </div>
+                
+                <button class="btn-primary" onclick="adicionarAoCarrinho()">➕ Adicionar ao Carrinho</button>
+                <button class="btn-secondary" onclick="fecharModalQuantidade()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Carrinho -->
+    <div class="modal-overlay" id="modalCarrinho">
+        <div class="modal">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 20px 0;">
+                <h2 style="font-size:20px;">🛒 Meu Carrinho</h2>
+                <button class="icon-btn" onclick="fecharCarrinho()" style="background:transparent;">✕</button>
+            </div>
+            <div class="modal-body" id="carrinhoItens"></div>
+            <div style="padding:0 20px 20px;">
+                <input type="text" id="clienteNome" placeholder="Seu nome completo" style="width:100%;padding:14px;border:2px solid var(--border);border-radius:50px;font-size:15px;margin-bottom:15px;">
+                <div style="display:flex;justify-content:space-between;background:var(--bg);padding:16px;border-radius:50px;margin-bottom:15px;font-weight:700;">
+                    <span>Total</span>
+                    <span style="color:var(--primary);font-size:20px;" id="carrinhoTotal">R$ 0,00</span>
+                </div>
+                
+                <div class="payment-options">
+                    <button class="payment-btn pix" onclick="escolherPagamento('pix')">
+                        💳 PIX - Pagamento via QR Code
+                    </button>
+                    <button class="payment-btn cash" onclick="escolherPagamento('dinheiro')">
+                        💵 Dinheiro - Pague na hora da retirada
+                    </button>
+                    <button class="payment-btn card" onclick="escolherPagamento('cartao')">
+                        💳 Cartão - Débito ou Crédito
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pagamento -->
+    <div class="modal-overlay" id="modalPagamento">
+        <div class="modal">
+            <div class="modal-body" style="text-align:center;">
+                <h2 id="pagamentoTitulo">💸 Pagamento</h2>
+                <p id="pagamentoInstrucao" style="color:var(--text-light);font-size:13px;margin:8px 0 16px;"></p>
+                
+                <div id="pixContent">
+                    <div id="qrcodeContainer" style="display:flex;justify-content:center;margin:20px 0;"></div>
+                    <div id="pixCode" style="background:var(--bg);padding:12px;border-radius:14px;font-size:10px;word-break:break-all;font-family:monospace;margin:12px 0;"></div>
+                    <div style="display:flex;gap:10px;margin-bottom:15px;">
+                        <button class="btn-secondary" onclick="copiarPix()" style="margin:0;flex:1;">📋 Copiar Código</button>
+                        <button class="btn-secondary" onclick="salvarQRCode()" style="margin:0;flex:1;">💾 Salvar QR</button>
+                    </div>
+                </div>
+                
+                <div id="dinheiroCartaoContent" class="hidden">
+                    <div style="background:var(--bg);border-radius:20px;padding:20px;margin:16px 0;">
+                        <div style="font-size:48px;margin-bottom:12px;" id="metodoIcone">💰</div>
+                        <div style="font-size:24px;font-weight:700;color:var(--primary);" id="valorPagamento">R$ 0,00</div>
+                        <p style="margin-top:12px;color:var(--text-light);" id="mensagemPagamento"></p>
+                    </div>
+                </div>
+                
+                <button class="btn-success" id="btnConfirmarPagamento" onclick="confirmarPagamento()">✅ JÁ PAGUEI - Ver meu pedido</button>
+                
+                <div id="comprovanteArea" class="hidden"></div>
+                
+                <button class="btn-secondary" onclick="fecharModalPagamento()" style="margin-top:16px;">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="cart-summary" id="cartSummary">
+        <div class="cart-summary-content">
+            <div class="cart-info">
+                <div class="count" id="resumoCount">0 itens</div>
+                <div class="total" id="resumoTotal">R$ 0,00</div>
+            </div>
+            <button class="btn-cart" onclick="abrirCarrinho()">Ver Carrinho</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script>
+        // ==================== CONFIGURAÇÕES ====================
+        const STORAGE = {
+            CONFIG: 'configFeira',
+            PRODUTOS: 'produtosFeira',
+            PEDIDOS: 'evento_pedidos',
+            CARRINHO: 'carrinhoAtual'
+        };
+
+        let config = JSON.parse(localStorage.getItem(STORAGE.CONFIG) || '{}');
+        let produtos = JSON.parse(localStorage.getItem(STORAGE.PRODUTOS) || '[]');
+        let carrinho = JSON.parse(sessionStorage.getItem(STORAGE.CARRINHO) || '[]');
+        
+        let produtoSelecionado = null;
+        let qtdSelecionada = 1;
+        let pixPayload = '';
+        let qrcodeObj = null;
+        
+        let pedidoTemp = null;
+        let metodoPagamentoSelecionado = null;
+
+        // Configurações padrão
+        if (!config.nomeBarraca) config.nomeBarraca = 'FoodFlow';
+        if (!config.palavraChave) config.palavraChave = 'FOODFLOW';
+        if (!config.pixKey) config.pixKey = '00020101021226850014br.gov.bcb.pix0136e5e5e5e5-e5e5-e5e5-e5e5-e5e5e5e5e5e552040000530398654040.005802BR5915FoodFlow6009SAO PAULO62070503***6304B8D3';
+        if (!config.pixRecipientName) config.pixRecipientName = 'FoodFlow';
+        if (!config.pixCity) config.pixCity = 'SAO PAULO';
+
+        const IMAGENS_PADRAO = {
+            padrao: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%23FF6B35"/%3E%3Ctext x="50" y="55" text-anchor="middle" font-size="40" fill="white"%3E🍽️%3C/text%3E%3C/svg%3E'
+        };
+
+        if (produtos.length === 0) {
+            produtos = [
+                { id: 1, nome: 'Hambúrguer Artesanal', descricao: 'Carne 180g, queijo cheddar, bacon, alface e tomate', preco: 28.00, imagem: IMAGENS_PADRAO.padrao, categoria: '🍔' },
+                { id: 2, nome: 'Porção de Fritas', descricao: 'Batatas crocantes 300g com molho especial', preco: 18.00, imagem: IMAGENS_PADRAO.padrao, categoria: '🍟' },
+                { id: 3, nome: 'Pastel de Carne', descricao: 'Massa crocante, recheio generoso', preco: 12.00, imagem: IMAGENS_PADRAO.padrao, categoria: '🥙' },
+                { id: 4, nome: 'Suco Natural', descricao: 'Laranja, limão ou maracujá 500ml', preco: 8.00, imagem: IMAGENS_PADRAO.padrao, categoria: '🥤' },
+                { id: 5, nome: 'Frango à Passarinho', descricao: 'Porção 400g com limão', preco: 32.00, imagem: IMAGENS_PADRAO.padrao, categoria: '🍗' },
+                { id: 6, nome: 'Petit Gâteau', descricao: 'Com sorvete de creme', preco: 15.00, imagem: IMAGENS_PADRAO.padrao, categoria: '🍰' }
+            ];
+            localStorage.setItem(STORAGE.PRODUTOS, JSON.stringify(produtos));
+        }
+
+        function init() {
+            document.getElementById('barracaNome').textContent = config.nomeBarraca;
+            renderizarProdutos();
+            atualizarResumo();
+        }
+
+        function renderizarProdutos() {
+            const grid = document.getElementById('produtosGrid');
+            if (produtos.length === 0) {
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;">Nenhum produto cadastrado</div>';
+                return;
+            }
+            grid.innerHTML = produtos.map(p => `
+                <div class="produto-card" onclick="abrirModalQuantidade(${p.id})">
+                    <img class="produto-imagem" src="${p.imagem || IMAGENS_PADRAO.padrao}" alt="${p.nome}" loading="lazy">
+                    <div class="produto-info">
+                        <h3>${p.categoria || '🍽️'} ${p.nome}</h3>
+                        <p class="produto-descricao">${p.descricao || ''}</p>
+                        <p class="produto-preco">R$ ${p.preco.toFixed(2)}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function atualizarDados() {
+            const novaConfig = JSON.parse(localStorage.getItem(STORAGE.CONFIG) || '{}');
+            const novosProdutos = JSON.parse(localStorage.getItem(STORAGE.PRODUTOS) || '[]');
+            Object.assign(config, novaConfig);
+            produtos.length = 0;
+            produtos.push(...novosProdutos);
+            document.getElementById('barracaNome').textContent = config.nomeBarraca;
+            renderizarProdutos();
+            mostrarToast('Cardápio atualizado');
+        }
+
+        function abrirModalQuantidade(id) {
+            produtoSelecionado = produtos.find(p => p.id === id);
+            if (!produtoSelecionado) return;
+            qtdSelecionada = 1;
+            document.getElementById('modalImg').src = produtoSelecionado.imagem || IMAGENS_PADRAO.padrao;
+            document.getElementById('modalNome').innerHTML = (produtoSelecionado.categoria || '🍽️') + ' ' + produtoSelecionado.nome;
+            document.getElementById('modalDescricao').textContent = produtoSelecionado.descricao || '';
+            document.getElementById('modalPrecoUnitario').textContent = `R$ ${produtoSelecionado.preco.toFixed(2)} / unidade`;
+            document.getElementById('qtdNumero').textContent = qtdSelecionada;
+            atualizarTotalModal();
+            document.getElementById('modalQuantidade').classList.add('active');
+            if (navigator.vibrate) navigator.vibrate(10);
+        }
+
+        function fecharModalQuantidade() {
+            document.getElementById('modalQuantidade').classList.remove('active');
+            produtoSelecionado = null;
+        }
+
+        function alterarQtd(delta) {
+            qtdSelecionada += delta;
+            if (qtdSelecionada < 1) qtdSelecionada = 1;
+            if (qtdSelecionada > 20) qtdSelecionada = 20;
+            document.getElementById('qtdNumero').textContent = qtdSelecionada;
+            atualizarTotalModal();
+        }
+
+        function atualizarTotalModal() {
+            if (!produtoSelecionado) return;
+            const total = produtoSelecionado.preco * qtdSelecionada;
+            document.getElementById('totalValor').textContent = `R$ ${total.toFixed(2)}`;
+        }
+
+        function adicionarAoCarrinho() {
+            if (!produtoSelecionado) return;
+            const existente = carrinho.find(i => i.id === produtoSelecionado.id);
+            if (existente) {
+                existente.qtd += qtdSelecionada;
+            } else {
+                carrinho.push({
+                    id: produtoSelecionado.id,
+                    nome: produtoSelecionado.nome,
+                    preco: produtoSelecionado.preco,
+                    imagem: produtoSelecionado.imagem,
+                    categoria: produtoSelecionado.categoria || '🍽️',
+                    qtd: qtdSelecionada
+                });
+            }
+            salvarCarrinho();
+            atualizarResumo();
+            fecharModalQuantidade();
+            mostrarToast(`✅ ${produtoSelecionado.nome} adicionado!`);
+        }
+
+        function salvarCarrinho() {
+            sessionStorage.setItem(STORAGE.CARRINHO, JSON.stringify(carrinho));
+        }
+
+        function atualizarResumo() {
+            const totalItens = carrinho.reduce((s, i) => s + i.qtd, 0);
+            const totalValor = carrinho.reduce((s, i) => s + (i.preco * i.qtd), 0);
+            document.getElementById('cartCount').textContent = totalItens;
+            document.getElementById('resumoCount').textContent = `${totalItens} ${totalItens === 1 ? 'item' : 'itens'}`;
+            document.getElementById('resumoTotal').textContent = `R$ ${totalValor.toFixed(2)}`;
+            const cartBtn = document.getElementById('cartBtn');
+            const summary = document.getElementById('cartSummary');
+            if (totalItens > 0) {
+                cartBtn.classList.add('has-items');
+                summary.classList.add('visible');
+            } else {
+                cartBtn.classList.remove('has-items');
+                summary.classList.remove('visible');
+            }
+        }
+
+        function abrirCarrinho() {
+            if (carrinho.length === 0) {
+                mostrarToast('Carrinho vazio');
+                return;
+            }
+            renderizarCarrinho();
+            document.getElementById('modalCarrinho').classList.add('active');
+        }
+
+        function fecharCarrinho() {
+            document.getElementById('modalCarrinho').classList.remove('active');
+        }
+
+        function renderizarCarrinho() {
+            const container = document.getElementById('carrinhoItens');
+            if (carrinho.length === 0) {
+                container.innerHTML = '<div class="empty-cart">🛒 Carrinho vazio</div>';
+                return;
+            }
+            container.innerHTML = carrinho.map(item => `
+                <div class="cart-item">
+                    <img class="cart-item-img" src="${item.imagem || IMAGENS_PADRAO.padrao}" alt="${item.nome}">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.categoria} ${item.nome}</div>
+                        <div class="cart-item-price">R$ ${item.preco.toFixed(2)}</div>
+                    </div>
+                    <div class="cart-item-qtd">
+                        <button class="qtd-mini-btn" onclick="alterarQtdCarrinho(${item.id}, -1)">-</button>
+                        <span style="min-width:30px;text-align:center;">${item.qtd}</span>
+                        <button class="qtd-mini-btn" onclick="alterarQtdCarrinho(${item.id}, 1)">+</button>
+                        <button class="qtd-mini-btn" onclick="removerItemCarrinho(${item.id})" style="background:#ffebee;">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+            const total = carrinho.reduce((s, i) => s + (i.preco * i.qtd), 0);
+            document.getElementById('carrinhoTotal').textContent = `R$ ${total.toFixed(2)}`;
+        }
+
+        function alterarQtdCarrinho(id, delta) {
+            const item = carrinho.find(i => i.id === id);
+            if (item) {
+                item.qtd += delta;
+                if (item.qtd <= 0) {
+                    carrinho = carrinho.filter(i => i.id !== id);
+                }
+                salvarCarrinho();
+                atualizarResumo();
+                renderizarCarrinho();
+            }
+        }
+
+        function removerItemCarrinho(id) {
+            carrinho = carrinho.filter(i => i.id !== id);
+            salvarCarrinho();
+            atualizarResumo();
+            renderizarCarrinho();
+            if (carrinho.length === 0) fecharCarrinho();
+        }
+
+        // ==================== FUNÇÃO PRINCIPAL - ESCOLHER PAGAMENTO ====================
+        function escolherPagamento(metodo) {
+            const nome = document.getElementById('clienteNome').value.trim();
+            if (!nome) {
+                mostrarToast('Digite seu nome');
+                document.getElementById('clienteNome').focus();
+                return;
+            }
+            if (carrinho.length === 0) {
+                mostrarToast('Carrinho vazio');
+                return;
+            }
+
+            metodoPagamentoSelecionado = metodo;
+            const total = carrinho.reduce((s, i) => s + (i.preco * i.qtd), 0);
+            const palavraUnica = `${config.palavraChave}-${Math.floor(Math.random() * 9000 + 1000)}`;
+
+            // Criar pedido
+            const novoPedido = {
+                orderId: `#${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`,
+                customerName: nome,
+                palavraChave: palavraUnica,
+                items: carrinho.map(i => ({
+                    name: i.nome,
+                    qty: i.qtd,
+                    price: i.preco,
+                    emoji: i.categoria || '🍽️'
+                })),
+                total: total,
+                metodoPagamento: metodo,
+                status: 'awaiting_payment',
+                createdAt: new Date().toISOString(),
+                expiresAt: new Date(Date.now() + 30 * 60000).toISOString()
+            };
+
+            // SALVAR PEDIDO NO LOCALSTORAGE IMEDIATAMENTE
+            let pedidosExistentes = JSON.parse(localStorage.getItem(STORAGE.PEDIDOS) || '[]');
+            pedidosExistentes.push(novoPedido);
+            localStorage.setItem(STORAGE.PEDIDOS, JSON.stringify(pedidosExistentes));
+            
+            // Armazenar na variável temporária para uso posterior
+            pedidoTemp = novoPedido;
+            
+            console.log('✅ PEDIDO SALVO!', novoPedido);
+            console.log('📦 Total de pedidos no localStorage:', pedidosExistentes.length);
+            console.log('🔑 Palavra-chave:', palavraUnica);
+
+            // Fechar carrinho
+            fecharCarrinho();
+            
+            // Configurar modal conforme método
+            const pixContent = document.getElementById('pixContent');
+            const dinheiroCartaoContent = document.getElementById('dinheiroCartaoContent');
+            const pagamentoTitulo = document.getElementById('pagamentoTitulo');
+            const pagamentoInstrucao = document.getElementById('pagamentoInstrucao');
+            
+            if (metodo === 'pix') {
+                const nomeLimpo = (config.pixRecipientName || 'FoodFlow').substring(0, 25).toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                const cidadeLimpa = (config.pixCity || 'SAO PAULO').substring(0, 15).toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                const chave = config.pixKey;
+                
+                const payload = [
+                    '000201', '010212', `26580014br.gov.bcb.pix0136${chave}`,
+                    '52040000', '5303986', `54${String(total.toFixed(2)).length}${total.toFixed(2)}`,
+                    '5802BR', `59${String(nomeLimpo.length).padStart(2, '0')}${nomeLimpo}`,
+                    `60${String(cidadeLimpa.length).padStart(2, '0')}${cidadeLimpa}`, '62070503***'
+                ].join('');
+                const crcPayload = payload + '6304';
+                pixPayload = crcPayload + calcularCRC16(crcPayload).toUpperCase();
+                
+                pagamentoTitulo.innerHTML = '💳 Pagamento via PIX';
+                pagamentoInstrucao.innerHTML = 'Escaneie o QR Code ou copie a chave para pagar';
+                
+                pixContent.classList.remove('hidden');
+                dinheiroCartaoContent.classList.add('hidden');
+                
+                const qrContainer = document.getElementById('qrcodeContainer');
+                qrContainer.innerHTML = '';
+                
+                setTimeout(() => {
+                    try {
+                        qrcodeObj = new QRCode(qrContainer, {
+                            text: pixPayload,
+                            width: 200,
+                            height: 200,
+                            colorDark: '#FF6B35',
+                            colorLight: '#ffffff',
+                            correctLevel: QRCode.CorrectLevel.M
+                        });
+                    } catch(e) {
+                        console.error('Erro ao gerar QR Code:', e);
+                        qrContainer.innerHTML = '<p style="color:red;">Erro ao gerar QR Code</p>';
+                    }
+                }, 100);
+                
+                document.getElementById('pixCode').textContent = pixPayload;
+                
+            } else if (metodo === 'dinheiro') {
+                pagamentoTitulo.innerHTML = '💵 Pagamento em Dinheiro';
+                pagamentoInstrucao.innerHTML = 'Pague no balcão na hora da retirada';
+                
+                pixContent.classList.add('hidden');
+                dinheiroCartaoContent.classList.remove('hidden');
+                document.getElementById('metodoIcone').innerHTML = '💵';
+                document.getElementById('valorPagamento').innerHTML = `R$ ${total.toFixed(2)}`;
+                document.getElementById('mensagemPagamento').innerHTML = 'Após pagar, clique em "Confirmar" para finalizar';
+                
+            } else if (metodo === 'cartao') {
+                pagamentoTitulo.innerHTML = '💳 Pagamento com Cartão';
+                pagamentoInstrucao.innerHTML = 'Aceitamos débito e crédito';
+                
+                pixContent.classList.add('hidden');
+                dinheiroCartaoContent.classList.remove('hidden');
+                document.getElementById('metodoIcone').innerHTML = '💳';
+                document.getElementById('valorPagamento').innerHTML = `R$ ${total.toFixed(2)}`;
+                document.getElementById('mensagemPagamento').innerHTML = 'Pague na máquina na hora da retirada';
+            }
+            
+            // Limpar carrinho
+            carrinho = [];
+            salvarCarrinho();
+            atualizarResumo();
+            document.getElementById('clienteNome').value = '';
+            
+            // Esconder comprovante
+            const comprovanteDiv = document.getElementById('comprovanteArea');
+            comprovanteDiv.classList.add('hidden');
+            comprovanteDiv.innerHTML = '';
+            
+            document.getElementById('modalPagamento').classList.add('active');
+            mostrarToast(`Pedido ${novoPedido.orderId} aguardando pagamento!`);
+        }
+
+        // Confirmar pagamento
+        function confirmarPagamento() {
+            if (!pedidoTemp) {
+                mostrarToast('Nenhum pedido pendente');
+                fecharModalPagamento();
+                return;
+            }
+
+            // Buscar e atualizar status no localStorage
+            let pedidosExistentes = JSON.parse(localStorage.getItem(STORAGE.PEDIDOS) || '[]');
+            const index = pedidosExistentes.findIndex(p => p.orderId === pedidoTemp.orderId);
+            
+            if (index !== -1) {
+                pedidosExistentes[index].status = 'paid';
+                pedidosExistentes[index].paidAt = new Date().toISOString();
+                localStorage.setItem(STORAGE.PEDIDOS, JSON.stringify(pedidosExistentes));
+                console.log('✅ Pedido atualizado para PAID:', pedidosExistentes[index]);
+            } else {
+                // Fallback: salvar como novo pedido pago
+                pedidoTemp.status = 'paid';
+                pedidoTemp.paidAt = new Date().toISOString();
+                pedidosExistentes.push(pedidoTemp);
+                localStorage.setItem(STORAGE.PEDIDOS, JSON.stringify(pedidosExistentes));
+            }
+
+            // Mostrar comprovante
+            const comprovanteDiv = document.getElementById('comprovanteArea');
+            comprovanteDiv.classList.remove('hidden');
+            
+            let metodoTexto = '';
+            let metodoIcone = '';
+            if (pedidoTemp.metodoPagamento === 'pix') {
+                metodoTexto = 'PIX';
+                metodoIcone = '💳';
+            } else if (pedidoTemp.metodoPagamento === 'dinheiro') {
+                metodoTexto = 'Dinheiro';
+                metodoIcone = '💵';
+            } else if (pedidoTemp.metodoPagamento === 'cartao') {
+                metodoTexto = 'Cartão';
+                metodoIcone = '💳';
+            }
+            
+            comprovanteDiv.innerHTML = `
+                <div class="comprovante">
+                    <h3>✅ Pagamento Confirmado!</h3>
+                    <p><strong>Pedido:</strong> ${pedidoTemp.orderId}</p>
+                    <p><strong>Cliente:</strong> ${pedidoTemp.customerName}</p>
+                    <p><strong>Valor:</strong> R$ ${pedidoTemp.total.toFixed(2)}</p>
+                    <p><strong>Pagamento:</strong> ${metodoIcone} ${metodoTexto}</p>
+                    <div class="palavra-chave">
+                        🔑 <strong>${pedidoTemp.palavraChave}</strong>
+                    </div>
+                    <p style="font-size:12px;margin-top:10px;">Mostre esta palavra no balcão para retirar seu pedido!</p>
+                </div>
+            `;
+
+            document.getElementById('pixContent').classList.add('hidden');
+            document.getElementById('dinheiroCartaoContent').classList.add('hidden');
+            document.getElementById('btnConfirmarPagamento').style.display = 'none';
+            
+            mostrarToast(`Pedido ${pedidoTemp.orderId} confirmado! Enviado para a cozinha.`);
+        }
+
+        function calcularCRC16(payload) {
+            let crc = 0xFFFF;
+            for (let i = 0; i < payload.length; i++) {
+                crc ^= payload.charCodeAt(i) << 8;
+                for (let j = 0; j < 8; j++) {
+                    crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) & 0xFFFF : (crc << 1) & 0xFFFF;
+                }
+            }
+            return crc.toString(16).padStart(4, '0');
+        }
+
+        function fecharModalPagamento() {
+            document.getElementById('modalPagamento').classList.remove('active');
+            document.getElementById('pixContent').classList.remove('hidden');
+            document.getElementById('dinheiroCartaoContent').classList.add('hidden');
+            document.getElementById('btnConfirmarPagamento').style.display = 'block';
+            document.getElementById('comprovanteArea').classList.add('hidden');
+        }
+
+        function copiarPix() {
+            if (!pixPayload) return;
+            navigator.clipboard.writeText(pixPayload);
+            mostrarToast('Código PIX copiado!');
+        }
+
+        function salvarQRCode() {
+            const canvas = document.querySelector('#qrcodeContainer canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = `qrcode-pix-${Date.now()}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+                mostrarToast('QR Code salvo!');
+            }
+        }
+
+        function mostrarToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) overlay.classList.remove('active');
+            });
+        });
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === STORAGE.CONFIG || e.key === STORAGE.PRODUTOS) {
+                atualizarDados();
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Administração - FoodFlow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #111827;
+            --text-secondary: #6b7280;
+            --border: #e5e7eb;
+            --primary: #111827;
+            --primary-hover: #374151;
+            --danger: #dc2626;
+            --success: #059669;
+            --warning: #f59e0b;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        @media (min-width: 641px) {
+            body { padding: 24px; }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        h2 {
+            font-size: 17px;
+            font-weight: 600;
+            margin: 24px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .section {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            min-height: 48px;
+            background: var(--bg);
+            transition: all 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--card-bg);
+        }
+
+        .file-upload {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg);
+        }
+
+        .file-upload:active {
+            border-color: var(--primary);
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .file-upload-label {
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .preview-container {
+            margin-top: 12px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .preview-container img {
+            max-width: 150px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            min-height: 50px;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .btn:active {
+            background: var(--primary-hover);
+            transform: scale(0.99);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-small {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            min-height: 40px;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+        }
+
+        .produto-item {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .produto-item-info {
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .produto-item-info strong {
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .produto-item-info span {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .produto-item-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #f0f0f0;
+            flex-shrink: 0;
+        }
+
+        .produto-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-edit {
+            background: var(--warning);
+        }
+
+        .alert {
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin-top: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            display: none;
+            text-align: center;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            color: var(--success);
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: var(--danger);
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .grid-inputs {
+            display: grid;
+            gap: 12px;
+        }
+
+        @media (min-width: 641px) {
+            .grid-inputs {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .orders-list-compact {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .order-compact {
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--warning);
+        }
+
+        .order-compact.paid {
+            border-left-color: var(--success);
+        }
+
+        .order-compact.delivered {
+            border-left-color: #888;
+            opacity: 0.7;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚙️ Administração FoodFlow</h1>
+
+        <!-- Estabelecimento -->
+        <div class="section">
+            <h2>🏪 Dados do Estabelecimento</h2>
+            <div class="form-group">
+                <label>Nome da Barraca</label>
+                <input type="text" id="nomeBarraca" placeholder="Ex: Barraca do Zé">
+            </div>
+            <div class="form-group">
+                <label>Senha do Painel da Equipe</label>
+                <input type="text" id="painelPassword" placeholder="Senha para acesso ao painel">
+                <div class="help-text">Use esta senha para logar no painel da cozinha</div>
+            </div>
+        </div>
+
+        <!-- PIX -->
+        <div class="section">
+            <h2>💰 Configuração PIX</h2>
+            <div class="form-group">
+                <label>Chave PIX</label>
+                <input type="text" id="pixKey" placeholder="CPF, e-mail, telefone ou chave aleatória">
+                <div class="help-text">Usada para gerar QR Code dinâmico</div>
+            </div>
+            <div class="form-group">
+                <label>Nome do Recebedor</label>
+                <input type="text" id="pixRecipientName" placeholder="Nome completo">
+            </div>
+            <div class="form-group">
+                <label>Cidade</label>
+                <input type="text" id="pixCity" placeholder="Ex: SAO PAULO">
+            </div>
+            <div class="form-group">
+                <label>Palavra-Chave Base</label>
+                <input type="text" id="palavraChave" placeholder="Palavra base para os pedidos">
+                <div class="help-text">Será combinada com um número único para cada pedido</div>
+            </div>
+        </div>
+
+        <!-- QR Code Image -->
+        <div class="section">
+            <h2>📱 QR Code PIX (Opcional)</h2>
+            <div class="help-text" style="margin-bottom:12px;">
+                Faça upload da imagem do QR Code PIX. Se não enviar, o sistema gera automaticamente.
+            </div>
+            <div class="file-upload">
+                <input type="file" id="qrcodeFile" accept="image/*" onchange="previewQRCode(event)">
+                <label for="qrcodeFile" class="file-upload-label">
+                    📷 Clique para selecionar imagem<br>
+                    <small>PNG, JPG ou JPEG (máx 2MB)</small>
+                </label>
+            </div>
+            <div class="preview-container" id="previewContainer" style="display:none;">
+                <img id="previewImage" src="" alt="Preview QR Code">
+            </div>
+            <button class="btn btn-outline" onclick="removerQRCode()" id="btnRemover" style="display:none;margin-top:12px;">
+                Remover imagem
+            </button>
+        </div>
+
+        <!-- Produtos -->
+        <div class="section">
+            <h2>🍔 Produtos</h2>
+            <div id="listaProdutos"></div>
+            <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+                <h3 id="formTitle">➕ Adicionar Produto</h3>
+                <div class="grid-inputs">
+                    <div class="form-group">
+                        <label>Nome</label>
+                        <input type="text" id="novoNome" placeholder="Nome do produto">
+                    </div>
+                    <div class="form-group">
+                        <label>Preço (R$)</label>
+                        <input type="number" id="novoPreco" placeholder="0.00" step="0.01" min="0">
+                    </div>
+                </div>
+                <div class="grid-inputs">
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <input type="text" id="novoDescricao" placeholder="Breve descrição">
+                    </div>
+                    <div class="form-group">
+                        <label>Categoria/Emoji</label>
+                        <select id="novoCategoria">
+                            <option value="🍔">🍔 Hambúrguer</option>
+                            <option value="🍟">🍟 Porções/Fritas</option>
+                            <option value="🥤">🥤 Bebidas/Sucos</option>
+                            <option value="🥙">🥙 Pastéis/Salgados</option>
+                            <option value="🍰">🍰 Sobremesas</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>URL da Imagem</label>
+                    <input type="text" id="novoImagem" placeholder="https://... ou deixe em branco para imagem padrão">
+                </div>
+                <input type="hidden" id="editandoId" value="">
+                <div class="button-group">
+                    <button class="btn" onclick="salvarProduto()" id="btnSalvar">Adicionar Produto</button>
+                    <button class="btn btn-outline" onclick="cancelarEdicao()" id="btnCancelar" style="display:none;">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pedidos do Dia (Admin) -->
+        <div class="section">
+            <h2>📋 Pedidos do Dia</h2>
+            <div id="listaPedidosAdmin" class="orders-list-compact">
+                <p style="color:var(--text-secondary);text-align:center;padding:20px;">Carregando...</p>
+            </div>
+            <button class="btn btn-outline" onclick="exportarPedidosCSV()" style="margin-top:12px;">📊 Exportar Relatório CSV</button>
+            <button class="btn btn-outline" onclick="limparPedidosAntigos()" style="margin-top:8px;">🗑️ Limpar Pedidos Antigos</button>
+        </div>
+
+        <button class="btn" onclick="salvarConfig()" style="margin-top:8px;">💾 Salvar Todas as Configurações</button>
+        <div id="alertBox" class="alert"></div>
+    </div>
+
+    <script>
+        // ===== CONSTANTES =====
+        const STORAGE_KEYS = {
+            CONFIG: 'configFeira',
+            PRODUCTS: 'produtosFeira',
+            ORDERS: 'evento_pedidos'
+        };
+
+        let CONFIG = JSON.parse(localStorage.getItem(STORAGE_KEYS.CONFIG) || '{}');
+        let PRODUCTS = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
+        let qrcodeImageData = CONFIG.qrcodeImage || null;
+        let editandoId = null;
+
+        // Produtos padrão
+        if (PRODUCTS.length === 0) {
+            PRODUCTS = [
+                { id: 1, nome: 'Hambúrguer Artesanal', descricao: 'Carne 180g, queijo cheddar, bacon, alface e tomate', preco: 28.00, imagem: 'https://picsum.photos/id/302/400/400', categoria: '🍔' },
+                { id: 2, nome: 'Porção de Fritas', descricao: 'Batatas crocantes 300g', preco: 18.00, imagem: 'https://picsum.photos/id/300/400/400', categoria: '🍟' },
+                { id: 3, nome: 'Pastel de Carne', descricao: 'Massa crocante, recheio generoso', preco: 12.00, imagem: 'https://picsum.photos/id/301/400/400', categoria: '🥙' },
+                { id: 4, nome: 'Suco Natural', descricao: 'Laranja, limão ou maracujá 500ml', preco: 8.00, imagem: 'https://picsum.photos/id/315/400/400', categoria: '🥤' }
+            ];
+            localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(PRODUCTS));
+        }
+
+        function init() {
+            document.getElementById('nomeBarraca').value = CONFIG.nomeBarraca || '';
+            document.getElementById('pixKey').value = CONFIG.pixKey || '';
+            document.getElementById('pixRecipientName').value = CONFIG.pixRecipientName || '';
+            document.getElementById('pixCity').value = CONFIG.pixCity || '';
+            document.getElementById('palavraChave').value = CONFIG.palavraChave || 'FOODFLOW';
+            document.getElementById('painelPassword').value = CONFIG.painelPassword || '1234';
+            
+            if (qrcodeImageData) {
+                document.getElementById('previewImage').src = qrcodeImageData;
+                document.getElementById('previewContainer').style.display = 'flex';
+                document.getElementById('btnRemover').style.display = 'block';
+            }
+            
+            renderizarProdutos();
+            carregarPedidosAdmin();
+        }
+
+        function previewQRCode(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (file.size > 2 * 1024 * 1024) {
+                mostrarAlerta('Imagem muito grande. Máx 2MB.', false);
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                qrcodeImageData = e.target.result;
+                document.getElementById('previewImage').src = qrcodeImageData;
+                document.getElementById('previewContainer').style.display = 'flex';
+                document.getElementById('btnRemover').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removerQRCode() {
+            qrcodeImageData = null;
+            document.getElementById('previewImage').src = '';
+            document.getElementById('previewContainer').style.display = 'none';
+            document.getElementById('btnRemover').style.display = 'none';
+            document.getElementById('qrcodeFile').value = '';
+            mostrarAlerta('QR Code removido', true);
+        }
+
+        function renderizarProdutos() {
+            const lista = document.getElementById('listaProdutos');
+            if (PRODUCTS.length === 0) {
+                lista.innerHTML = '<p style="color:var(--text-secondary);font-size:14px;text-align:center;padding:20px;">Nenhum produto</p>';
+                return;
+            }
+            lista.innerHTML = PRODUCTS.map(produto => `
+                <div class="produto-item">
+                    ${produto.imagem ? `<img class="produto-item-img" src="${produto.imagem}" alt="${produto.nome}" onerror="this.style.display='none'">` : '<div class="produto-item-img" style="display:flex;align-items:center;justify-content:center;">📷</div>'}
+                    <div class="produto-item-info">
+                        <strong>${produto.categoria || '🍔'} ${produto.nome}</strong>
+                        <span>${produto.descricao || 'Sem descrição'} • R$ ${parseFloat(produto.preco).toFixed(2)}</span>
+                    </div>
+                    <div class="produto-actions">
+                        <button class="btn-small btn-edit" onclick="editarProduto(${produto.id})">✏️</button>
+                        <button class="btn-small" onclick="removerProduto(${produto.id})">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function editarProduto(id) {
+            const produto = PRODUCTS.find(p => p.id === id);
+            if (!produto) return;
+            
+            editandoId = id;
+            document.getElementById('novoNome').value = produto.nome;
+            document.getElementById('novoPreco').value = produto.preco;
+            document.getElementById('novoDescricao').value = produto.descricao || '';
+            document.getElementById('novoImagem').value = produto.imagem || '';
+            document.getElementById('novoCategoria').value = produto.categoria || '🍔';
+            document.getElementById('formTitle').textContent = '✏️ Editando Produto';
+            document.getElementById('btnSalvar').textContent = 'Atualizar Produto';
+            document.getElementById('btnCancelar').style.display = 'block';
+        }
+
+        function cancelarEdicao() {
+            editandoId = null;
+            document.getElementById('novoNome').value = '';
+            document.getElementById('novoPreco').value = '';
+            document.getElementById('novoDescricao').value = '';
+            document.getElementById('novoImagem').value = '';
+            document.getElementById('novoCategoria').value = '🍔';
+            document.getElementById('formTitle').textContent = '➕ Adicionar Produto';
+            document.getElementById('btnSalvar').textContent = 'Adicionar Produto';
+            document.getElementById('btnCancelar').style.display = 'none';
+        }
+
+        function salvarProduto() {
+            const nome = document.getElementById('novoNome').value.trim();
+            const preco = parseFloat(document.getElementById('novoPreco').value);
+            const descricao = document.getElementById('novoDescricao').value.trim();
+            const imagem = document.getElementById('novoImagem').value.trim();
+            const categoria = document.getElementById('novoCategoria').value;
+
+            if (!nome) { mostrarAlerta('Digite o nome', false); return; }
+            if (!preco || preco <= 0) { mostrarAlerta('Preço inválido', false); return; }
+
+            if (editandoId) {
+                const index = PRODUCTS.findIndex(p => p.id === editandoId);
+                if (index !== -1) {
+                    PRODUCTS[index] = {
+                        ...PRODUCTS[index],
+                        nome, preco, descricao, imagem: imagem || '', categoria
+                    };
+                    mostrarAlerta('Produto atualizado', true);
+                }
+                editandoId = null;
+            } else {
+                PRODUCTS.push({
+                    id: Date.now(),
+                    nome,
+                    preco,
+                    descricao,
+                    imagem: imagem || '',
+                    categoria
+                });
+                mostrarAlerta('Produto adicionado', true);
+            }
+
+            localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(PRODUCTS));
+            
+            document.getElementById('novoNome').value = '';
+            document.getElementById('novoPreco').value = '';
+            document.getElementById('novoDescricao').value = '';
+            document.getElementById('novoImagem').value = '';
+            document.getElementById('formTitle').textContent = '➕ Adicionar Produto';
+            document.getElementById('btnSalvar').textContent = 'Adicionar Produto';
+            document.getElementById('btnCancelar').style.display = 'none';
+            
+            renderizarProdutos();
+        }
+
+        function removerProduto(id) {
+            if (confirm('Remover este produto?')) {
+                PRODUCTS = PRODUCTS.filter(p => p.id !== id);
+                localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(PRODUCTS));
+                renderizarProdutos();
+                mostrarAlerta('Produto removido', true);
+            }
+        }
+
+        function carregarPedidosAdmin() {
+            const pedidos = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
+            const container = document.getElementById('listaPedidosAdmin');
+            
+            if (pedidos.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:20px;">Nenhum pedido realizado hoje</p>';
+                return;
+            }
+            
+            const hoje = new Date().toDateString();
+            const pedidosHoje = pedidos.filter(p => new Date(p.createdAt).toDateString() === hoje);
+            
+            if (pedidosHoje.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:20px;">Nenhum pedido hoje</p>';
+                return;
+            }
+            
+            container.innerHTML = pedidosHoje.map(pedido => `
+                <div class="order-compact ${pedido.status}">
+                    <strong>${pedido.orderId}</strong> - ${pedido.customerName}<br>
+                    <small>${pedido.items.length} itens • R$ ${pedido.total.toFixed(2)}</small><br>
+                    <small>Status: ${pedido.status === 'awaiting_payment' ? '⏳ Aguardando' : pedido.status === 'paid' ? '✅ Pago' : '📦 Entregue'}</small>
+                </div>
+            `).join('');
+        }
+
+        function exportarPedidosCSV() {
+            const pedidos = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
+            if (pedidos.length === 0) {
+                mostrarAlerta('Nenhum pedido para exportar', false);
+                return;
+            }
+            
+            let csv = "ID do Pedido,Cliente,Total,Status,Data,Hora,Itens\n";
+            pedidos.forEach(p => {
+                const data = new Date(p.createdAt);
+                const itens = p.items.map(i => `${i.qty}x ${i.name}`).join(' | ');
+                csv += `"${p.orderId}","${p.customerName}",${p.total.toFixed(2)},"${p.status}","${data.toLocaleDateString()}","${data.toLocaleTimeString()}","${itens}"\n`;
+            });
+            
+            const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.setAttribute("download", `pedidos_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            mostrarAlerta('Relatório exportado!', true);
+        }
+
+        function limparPedidosAntigos() {
+            const pedidos = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
+            const hoje = new Date();
+            const pedidosRecentes = pedidos.filter(p => {
+                const dataPedido = new Date(p.createdAt);
+                const diffDias = (hoje - dataPedido) / (1000 * 60 * 60 * 24);
+                return diffDias <= 7;
+            });
+            localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(pedidosRecentes));
+            carregarPedidosAdmin();
+            mostrarAlerta(`Removidos ${pedidos.length - pedidosRecentes.length} pedidos antigos`, true);
+        }
+
+        function salvarConfig() {
+            const pixKey = document.getElementById('pixKey').value.trim();
+            const palavraChave = document.getElementById('palavraChave').value.trim();
+
+            if (!pixKey) { mostrarAlerta('Chave PIX obrigatória', false); return; }
+            if (!palavraChave) { mostrarAlerta('Palavra-chave obrigatória', false); return; }
+
+            const novaConfig = {
+                nomeBarraca: document.getElementById('nomeBarraca').value.trim(),
+                pixKey,
+                pixRecipientName: document.getElementById('pixRecipientName').value.trim(),
+                pixCity: document.getElementById('pixCity').value.trim().toUpperCase(),
+                palavraChave,
+                painelPassword: document.getElementById('painelPassword').value.trim() || '1234',
+                qrcodeImage: qrcodeImageData
+            };
+
+            localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(novaConfig));
+            CONFIG = novaConfig;
+            
+            mostrarAlerta('Configurações salvas!', true);
+        }
+
+        function mostrarAlerta(mensagem, sucesso) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.textContent = mensagem;
+            alertBox.className = 'alert ' + (sucesso ? 'alert-success' : 'alert-error');
+            alertBox.style.display = 'block';
+            setTimeout(() => alertBox.style.display = 'none', 4000);
+        }
+
+        init();
+    </script>
+</body>
+</html>
