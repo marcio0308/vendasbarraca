@@ -2,162 +2,264 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel da Cozinha - FoodFlow</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#1a56db">
+    <title>Painel do Atendimento</title>
     <style>
-        :root {
-            --primary: #FF6B35;
-            --secondary: #004E89;
-            --success: #2ECC71;
-            --warning: #F39C12;
-            --danger: #E74C3C;
-            --bg: #1a1a2e;
-            --card: #16213e;
-            --text: #eee;
-            --text-secondary: #aaa;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #1a56db;
+            --primary-dark: #1e40af;
+            --primary-light: #3b82f6;
+            --primary-bg: #eff6ff;
+            --success: #059669;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --canceled: #6b7280;
+            --text: #111827;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --bg: #f3f4f6;
+            --card: #ffffff;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
             background: var(--bg);
             color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             min-height: 100vh;
         }
 
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        /* Tela de Login */
         .login-screen {
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             padding: 20px;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--bg) 100%);
         }
 
         .login-box {
             background: var(--card);
-            border-radius: 25px;
-            padding: 35px 25px;
+            border-radius: 24px;
+            padding: 32px 28px;
             width: 100%;
-            max-width: 400px;
+            max-width: 360px;
             text-align: center;
+            box-shadow: var(--shadow-lg);
+            animation: fadeInUp 0.4s ease;
         }
 
-        .login-box input {
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-box h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--primary-dark);
+        }
+
+        .login-box .subtitle {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 24px;
+        }
+
+        .login-box select {
             width: 100%;
-            padding: 16px;
-            border-radius: 30px;
-            border: 2px solid #333;
+            padding: 14px 16px;
+            border-radius: 40px;
+            border: 2px solid var(--border);
             background: var(--bg);
-            color: #fff;
-            font-size: 1.3rem;
-            text-align: center;
-            letter-spacing: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .login-box select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
         }
 
         .login-box .btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 15px;
-            border-radius: 30px;
+            padding: 14px;
+            border-radius: 40px;
             font-weight: 700;
-            width: 100%;
-            margin-top: 15px;
+            font-size: 15px;
             cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.2s;
         }
 
+        .login-box .btn:active {
+            transform: scale(0.97);
+            background: var(--primary-dark);
+        }
+
+        /* Dashboard */
         .dashboard {
             display: none;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 15px;
         }
 
-        .dashboard-header {
+        /* Header */
+        .header {
             background: var(--card);
             border-radius: 20px;
-            padding: 18px 20px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
             flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .vendedor-info {
+            background: var(--primary-bg);
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .logout-btn {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:active {
+            transform: scale(0.96);
+            background: var(--border);
         }
 
         .live-badge {
-            background: #1a3a1a;
+            background: #ecfdf5;
             color: var(--success);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            display: flex;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
         }
 
         .pulse-dot {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
             background: var(--success);
             animation: pulse 1.5s infinite;
         }
 
         @keyframes pulse {
-            0%,100%{opacity:1;} 50%{opacity:0.2;}
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
 
+        /* Stats */
         .stats-row {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
         }
 
         .stat-card {
             background: var(--card);
-            border-radius: 15px;
-            padding: 18px;
+            border-radius: 20px;
+            padding: 16px;
             text-align: center;
-            border-top: 3px solid transparent;
+            border-top: 3px solid var(--primary);
+            box-shadow: var(--shadow);
+            transition: all 0.2s;
         }
 
-        .stat-card:nth-child(1) { border-top-color: var(--warning); }
-        .stat-card:nth-child(2) { border-top-color: var(--success); }
-        .stat-card:nth-child(3) { border-top-color: #8e9eab; }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            display: block;
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
         }
+
         .stat-card:nth-child(1) .stat-number { color: var(--warning); }
         .stat-card:nth-child(2) .stat-number { color: var(--success); }
-        .stat-card:nth-child(3) .stat-number { color: #8e9eab; }
+        .stat-card:nth-child(3) .stat-number { color: var(--canceled); }
+        .stat-card:nth-child(4) .stat-number { color: #6b7280; }
 
+        .stat-number {
+            font-size: 32px;
+            font-weight: 800;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        /* Tabs */
         .tabs {
             display: flex;
-            gap: 5px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 20px;
             background: var(--card);
-            border-radius: 30px;
-            padding: 5px;
+            border-radius: 50px;
+            padding: 6px;
+            box-shadow: var(--shadow);
         }
 
         .tab-btn {
             flex: 1;
-            padding: 11px;
+            padding: 10px;
             border: none;
-            border-radius: 26px;
+            border-radius: 40px;
             background: transparent;
-            color: #888;
+            color: var(--text-light);
             font-weight: 600;
+            font-size: 13px;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
         .tab-btn.active {
@@ -165,179 +267,314 @@
             color: white;
         }
 
+        .tab-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* Orders List */
         .orders-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 16px;
         }
 
         .order-card {
             background: var(--card);
-            border-radius: 15px;
-            padding: 20px;
-            border-left: 5px solid var(--warning);
+            border-radius: 20px;
+            padding: 18px;
+            border-left: 4px solid var(--warning);
+            box-shadow: var(--shadow);
+            transition: all 0.2s;
+        }
+
+        .order-card:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-hover);
         }
 
         .order-card.status-paid {
             border-left-color: var(--success);
-            background: #162618;
+            background: linear-gradient(135deg, var(--card) 0%, #ecfdf5 100%);
             animation: glow 2s infinite;
         }
 
-        @keyframes glow {
-            0%,100%{box-shadow:0 0 10px rgba(46,204,113,0.2);}
-            50%{box-shadow:0 0 25px rgba(46,204,113,0.5);}
+        .order-card.status-delivered {
+            border-left-color: #9ca3af;
+            opacity: 0.75;
         }
 
-        .order-card.status-delivered {
-            border-left-color: #555;
-            opacity: 0.6;
+        .order-card.status-canceled {
+            border-left-color: var(--canceled);
+            background: #f9fafb;
+            opacity: 0.7;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.2); }
+            50% { box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1); }
         }
 
         .order-header {
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
             margin-bottom: 12px;
             flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .order-id {
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .order-customer {
+            background: var(--primary-bg);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            display: inline-block;
         }
 
         .order-status-badge {
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.7rem;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 10px;
             font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-awaiting {
+            background: #fef3c7;
+            color: var(--warning);
         }
 
         .badge-paid {
-            background: rgba(46,204,113,0.2);
+            background: #ecfdf5;
             color: var(--success);
         }
 
+        .badge-canceled {
+            background: #f3f4f6;
+            color: var(--canceled);
+        }
+
         .order-items {
-            font-size: 0.9rem;
+            font-size: 12px;
+            color: var(--text-light);
+            line-height: 1.5;
             margin-bottom: 12px;
-            background: rgba(0,0,0,0.2);
+            background: var(--bg);
             padding: 12px;
-            border-radius: 10px;
+            border-radius: 12px;
         }
 
         .order-total {
-            font-weight: 700;
+            font-weight: 800;
             color: var(--primary);
-            font-size: 1.3rem;
+            font-size: 17px;
             display: block;
             text-align: right;
         }
 
-        .btn-action {
-            padding: 10px 20px;
-            border-radius: 25px;
-            border: none;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 12px;
-            width: 100%;
+        .order-time {
+            font-size: 10px;
+            color: var(--text-light);
+            margin-top: 8px;
+            text-align: right;
         }
 
-        .btn-deliver {
+        .order-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .btn-action {
+            padding: 10px 20px;
+            border-radius: 40px;
+            border: none;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+        }
+
+        .btn-confirm {
             background: var(--success);
             color: white;
         }
 
-        .empty-orders {
-            text-align: center;
-            padding: 50px;
-            color: #555;
+        .btn-deliver {
+            background: var(--primary);
+            color: white;
         }
 
-        audio {
-            display: none;
+        .btn-cancel {
+            background: var(--canceled);
+            color: white;
+        }
+
+        .btn-action:active {
+            transform: scale(0.97);
+        }
+
+        .empty-orders {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-light);
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
-    <audio id="notificationSound" preload="auto">
-        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
-    </audio>
-
     <div class="login-screen" id="loginScreen">
         <div class="login-box">
-            <span style="font-size:3rem;">👨‍🍳</span>
-            <h2>Painel da Cozinha</h2>
-            <p style="color:#888;margin-bottom:20px;">Controle de pedidos</p>
-            <input type="password" id="passwordInput" placeholder="Senha" maxlength="6">
-            <button class="btn" onclick="login()">Entrar</button>
-            <p id="errorMsg" style="color:var(--danger);margin-top:10px;display:none;">Senha incorreta!</p>
+            <h2>Acesso do voluntario</h2>
+            <p class="subtitle">Selecione seu nome para continuar</p>
+            <select id="vendedorLogin">
+                <option value="">Selecione um vendedor</option>
+            </select>
+            <button class="btn" onclick="fazerLogin()">Acessar Painel</button>
         </div>
     </div>
 
     <div class="dashboard" id="dashboard">
-        <div class="dashboard-header">
-            <h1>🍽️ Pedidos <span class="live-badge"><span class="pulse-dot"></span> AO VIVO</span></h1>
-            <div style="display:flex;gap:8px;">
-                <button class="btn-refresh" onclick="carregarPedidos()" style="background:var(--secondary);border:none;color:white;padding:8px 16px;border-radius:20px;">🔄</button>
-                <button class="btn-logout" onclick="logout()" style="background:transparent;border:2px solid #444;color:#ccc;padding:8px 16px;border-radius:20px;">🚪 Sair</button>
+        <div class="container">
+            <div class="header">
+                <h1>Painel do Vendedor <span class="live-badge"><span class="pulse-dot"></span> AO VIVO</span></h1>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <span class="vendedor-info" id="vendedorNomeDisplay"></span>
+                    <button class="logout-btn" onclick="logout()">Sair</button>
+                </div>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-card">
+                    <span class="stat-number" id="countAwaiting">0</span>
+                    <span class="stat-label">Aguardando Pagamento</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="countPaid">0</span>
+                    <span class="stat-label">Pagos para Entregar</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="countCanceled">0</span>
+                    <span class="stat-label">Cancelados</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="countDelivered">0</span>
+                    <span class="stat-label">Entregues</span>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('awaiting_payment', this)">Aguardando Pagamento</button>
+                <button class="tab-btn" onclick="switchTab('paid', this)">Pagos para Entregar</button>
+                <button class="tab-btn" onclick="switchTab('delivered', this)">Entregues</button>
+                <button class="tab-btn" onclick="switchTab('canceled', this)">Cancelados</button>
+            </div>
+
+            <div class="orders-list" id="ordersList">
+                <div class="empty-orders">Nenhum pedido encontrado</div>
             </div>
         </div>
-
-        <div class="stats-row">
-            <div class="stat-card"><span class="stat-number" id="countPaid">0</span><span class="stat-label">✅ Pagos</span></div>
-            <div class="stat-card"><span class="stat-number" id="countDelivered">0</span><span class="stat-label">📦 Entregues</span></div>
-        </div>
-
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('paid', this)">✅ Pagos</button>
-            <button class="tab-btn" onclick="switchTab('delivered', this)">📦 Entregues</button>
-        </div>
-
-        <div class="orders-list" id="ordersList"></div>
     </div>
 
     <script>
-        const STORAGE_KEYS = { ORDERS: 'evento_pedidos', CONFIG: 'configFeira' };
-        let currentTab = 'paid';
-        let lastOrdersCount = 0;
+        const STORAGE_KEYS = {
+            ORDERS: 'evento_pedidos',
+            VENDEDORES: 'vendedores'
+        };
 
-        function login() {
-            const config = JSON.parse(localStorage.getItem(STORAGE_KEYS.CONFIG) || '{}');
-            const senhaCorreta = config.painelPassword || '1234';
-            const password = document.getElementById('passwordInput').value;
+        let vendedorLogado = null;
+        let currentTab = 'awaiting_payment';
+        let lastAwaitingCount = 0;
+
+        function carregarVendedoresLogin() {
+            const vendedores = JSON.parse(localStorage.getItem(STORAGE_KEYS.VENDEDORES) || '[]');
+            const select = document.getElementById('vendedorLogin');
+            select.innerHTML = '<option value="">Selecione um vendedor</option>';
+            vendedores.forEach(v => {
+                select.innerHTML += `<option value="${v.nome}">${v.nome}</option>`;
+            });
+        }
+
+        function fazerLogin() {
+            const select = document.getElementById('vendedorLogin');
+            const vendedor = select.value;
             
-            if (password === senhaCorreta) {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('dashboard').style.display = 'block';
-                carregarPedidos();
-                setInterval(carregarPedidos, 4000);
-            } else {
-                document.getElementById('errorMsg').style.display = 'block';
-                document.getElementById('passwordInput').value = '';
+            if (!vendedor) {
+                alert('Selecione um vendedor');
+                return;
             }
+            
+            vendedorLogado = vendedor;
+            document.getElementById('vendedorNomeDisplay').textContent = vendedorLogado;
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            carregarPedidos();
+            setInterval(carregarPedidos, 5000);
         }
 
         function logout() {
+            vendedorLogado = null;
             document.getElementById('loginScreen').style.display = 'flex';
             document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('passwordInput').value = '';
+            currentTab = 'awaiting_payment';
+            document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+                if (i === 0) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
         }
 
         function carregarPedidos() {
-            const pedidos = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
-            const pedidosPagos = pedidos.filter(p => p.status === 'paid');
-            const pedidosEntregues = pedidos.filter(p => p.status === 'delivered');
+            if (!vendedorLogado) return;
             
-            const novoCount = pedidosPagos.length;
-            if (novoCount > lastOrdersCount && lastOrdersCount > 0) {
-                const audio = document.getElementById('notificationSound');
-                audio.play().catch(e => console.log('Audio não reproduzido'));
+            const pedidos = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
+            
+            // Filtrar APENAS pedidos do vendedor logado
+            let pedidosVendedor = pedidos.filter(p => p.vendedorResponsavel === vendedorLogado);
+            
+            let pedidosAwaiting = pedidosVendedor.filter(p => p.status === 'awaiting_payment');
+            let pedidosPagos = pedidosVendedor.filter(p => p.status === 'paid');
+            let pedidosEntregues = pedidosVendedor.filter(p => p.status === 'delivered');
+            let pedidosCancelados = pedidosVendedor.filter(p => p.status === 'canceled');
+            
+            const novoCountAwaiting = pedidosAwaiting.length;
+            if (novoCountAwaiting > lastAwaitingCount && lastAwaitingCount > 0) {
                 if (navigator.vibrate) navigator.vibrate(500);
             }
-            lastOrdersCount = novoCount;
+            lastAwaitingCount = novoCountAwaiting;
             
+            document.getElementById('countAwaiting').textContent = pedidosAwaiting.length;
             document.getElementById('countPaid').textContent = pedidosPagos.length;
+            document.getElementById('countCanceled').textContent = pedidosCancelados.length;
             document.getElementById('countDelivered').textContent = pedidosEntregues.length;
             
-            const filtrados = pedidos.filter(p => p.status === currentTab);
-            filtrados.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+            let filtrados = [];
+            if (currentTab === 'awaiting_payment') filtrados = pedidosAwaiting;
+            else if (currentTab === 'paid') filtrados = pedidosPagos;
+            else if (currentTab === 'delivered') filtrados = pedidosEntregues;
+            else filtrados = pedidosCancelados;
+            
+            filtrados.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             renderizarPedidos(filtrados);
         }
 
@@ -345,35 +582,127 @@
             const container = document.getElementById('ordersList');
             
             if (pedidos.length === 0) {
-                container.innerHTML = `<div class="empty-orders"><span style="font-size:3rem;">📭</span><p>Nenhum pedido ${currentTab === 'paid' ? 'para preparar' : 'entregue'}</p></div>`;
+                let mensagem = '';
+                if (currentTab === 'awaiting_payment') mensagem = 'Nenhum pedido aguardando pagamento';
+                else if (currentTab === 'paid') mensagem = 'Nenhum pedido para entregar';
+                else if (currentTab === 'delivered') mensagem = 'Nenhum pedido entregue';
+                else mensagem = 'Nenhum pedido cancelado';
+                container.innerHTML = `<div class="empty-orders">${mensagem}</div>`;
                 return;
             }
             
-            container.innerHTML = pedidos.map(pedido => `
-                <div class="order-card status-${pedido.status}">
-                    <div class="order-header">
-                        <div><strong>${pedido.orderId}</strong> • ${pedido.customerName}</div>
-                        <span class="order-status-badge badge-paid">${pedido.status === 'paid' ? '💰 PAGO' : '📦 ENTREGUE'}</span>
+            container.innerHTML = pedidos.map(pedido => {
+                let statusClass = '';
+                let badgeClass = '';
+                let statusTexto = '';
+                
+                if (pedido.status === 'awaiting_payment') {
+                    statusClass = '';
+                    badgeClass = 'badge-awaiting';
+                    statusTexto = 'AGUARDANDO PAGAMENTO';
+                } else if (pedido.status === 'paid') {
+                    statusClass = 'status-paid';
+                    badgeClass = 'badge-paid';
+                    statusTexto = 'PAGO';
+                } else if (pedido.status === 'delivered') {
+                    statusClass = 'status-delivered';
+                    statusTexto = 'ENTREGUE';
+                } else {
+                    statusClass = 'status-canceled';
+                    badgeClass = 'badge-canceled';
+                    statusTexto = 'CANCELADO';
+                }
+                
+                const itemsHTML = pedido.items.map(item =>
+                    `${item.qty}x ${item.name} — R$ ${(item.price * item.qty).toFixed(2)}`
+                ).join('<br>');
+                
+                const time = new Date(pedido.createdAt);
+                const timeStr = time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                const dateStr = time.toLocaleDateString('pt-BR');
+                
+                let actionsHTML = '';
+                if (pedido.status === 'awaiting_payment') {
+                    actionsHTML = `<div class="order-actions">
+                        <button class="btn-action btn-confirm" onclick="confirmarPagamento('${pedido.orderId}')">Confirmar Pagamento</button>
+                        <button class="btn-action btn-cancel" onclick="cancelarPedido('${pedido.orderId}')">Cancelar Pedido</button>
+                    </div>`;
+                } else if (pedido.status === 'paid') {
+                    actionsHTML = `<div class="order-actions">
+                        <button class="btn-action btn-deliver" onclick="marcarEntregue('${pedido.orderId}')">Marcar como Entregue</button>
+                        <button class="btn-action btn-cancel" onclick="cancelarPedido('${pedido.orderId}')">Cancelar Pedido</button>
+                    </div>`;
+                }
+                
+                let metodoTexto = '';
+                if (pedido.metodoPagamento === 'pix') metodoTexto = 'PIX';
+                else if (pedido.metodoPagamento === 'dinheiro') metodoTexto = 'Dinheiro';
+                else if (pedido.metodoPagamento === 'cartao') metodoTexto = 'Cartão';
+                
+                let canceladoInfo = '';
+                if (pedido.status === 'canceled' && pedido.canceledAt) {
+                    const cancelTime = new Date(pedido.canceledAt);
+                    canceladoInfo = `<div class="order-time">Cancelado em: ${cancelTime.toLocaleDateString()} às ${cancelTime.toLocaleTimeString()}</div>`;
+                }
+                
+                return `
+                    <div class="order-card ${statusClass}">
+                        <div class="order-header">
+                            <div>
+                                <span class="order-id">Pedido ${pedido.orderId}</span>
+                                <span class="order-customer">${pedido.customerName}</span>
+                                <span class="order-customer" style="font-size: 12px; background: var(--bg); color: var(--text-light); padding: 4px 12px;">Pagamento: ${metodoTexto}</span>
+                            </div>
+                            <span class="order-status-badge ${badgeClass}">${statusTexto}</span>
+                        </div>
+                        <div class="order-items">${itemsHTML}</div>
+                        <span class="order-total">Total: R$ ${pedido.total.toFixed(2)}</span>
+                        <div class="order-time">Data: ${dateStr} às ${timeStr}</div>
+                        ${canceladoInfo}
+                        ${actionsHTML}
                     </div>
-                    <div class="order-items">
-                        ${pedido.items.map(i => `<div>${i.emoji || '🍽️'} ${i.qty}x ${i.name} — R$ ${(i.price * i.qty).toFixed(2)}</div>`).join('')}
-                    </div>
-                    <div class="order-total">💰 R$ ${pedido.total.toFixed(2)}</div>
-                    <div style="font-size:11px;color:#666;margin-top:8px;">🕐 ${new Date(pedido.createdAt).toLocaleString()}</div>
-                    ${pedido.status === 'paid' ? `<button class="btn-action btn-deliver" onclick="marcarEntregue('${pedido.orderId}')">📦 Marcar como Entregue</button>` : ''}
-                </div>
-            `).join('');
+                `;
+            }).join('');
+        }
+
+        function confirmarPagamento(orderId) {
+            let pedidos = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
+            const index = pedidos.findIndex(o => o.orderId === orderId);
+            if (index !== -1 && pedidos[index].status === 'awaiting_payment') {
+                pedidos[index].status = 'paid';
+                pedidos[index].paidAt = new Date().toISOString();
+                localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(pedidos));
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                carregarPedidos();
+            }
         }
 
         function marcarEntregue(orderId) {
-            const pedidos = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
-            const index = pedidos.findIndex(p => p.orderId === orderId);
-            if (index !== -1) {
+            let pedidos = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
+            const index = pedidos.findIndex(o => o.orderId === orderId);
+            if (index !== -1 && pedidos[index].status === 'paid') {
                 pedidos[index].status = 'delivered';
                 pedidos[index].deliveredAt = new Date().toISOString();
                 localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(pedidos));
+                if (navigator.vibrate) navigator.vibrate(50);
                 carregarPedidos();
-                if (navigator.vibrate) navigator.vibrate(200);
+            }
+        }
+
+        function cancelarPedido(orderId) {
+            if (!confirm('Tem certeza que deseja cancelar este pedido? Esta ação não pode ser desfeita.')) {
+                return;
+            }
+            
+            let pedidos = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
+            const index = pedidos.findIndex(o => o.orderId === orderId);
+            if (index !== -1 && (pedidos[index].status === 'awaiting_payment' || pedidos[index].status === 'paid')) {
+                pedidos[index].status = 'canceled';
+                pedidos[index].canceledAt = new Date().toISOString();
+                pedidos[index].canceledBy = vendedorLogado;
+                localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(pedidos));
+                if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                carregarPedidos();
             }
         }
 
@@ -384,8 +713,11 @@
             carregarPedidos();
         }
 
-        window.addEventListener('storage', () => carregarPedidos());
-        document.getElementById('passwordInput').addEventListener('keypress', e => { if(e.key === 'Enter') login(); });
+        window.addEventListener('storage', () => {
+            if (vendedorLogado) carregarPedidos();
+        });
+
+        carregarVendedoresLogin();
     </script>
 </body>
 </html>

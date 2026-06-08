@@ -2,74 +2,145 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Administração - FoodFlow</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#1a56db">
+    <title>Administração</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         :root {
-            --bg: #f8f9fa;
-            --card-bg: #ffffff;
-            --text: #111827;
-            --text-secondary: #6b7280;
-            --border: #e5e7eb;
-            --primary: #111827;
-            --primary-hover: #374151;
-            --danger: #dc2626;
+            --primary: #1a56db;
+            --primary-dark: #1e40af;
+            --primary-light: #3b82f6;
+            --primary-bg: #eff6ff;
             --success: #059669;
-            --warning: #f59e0b;
-            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --danger: #dc2626;
+            --warning: #d97706;
+            --canceled: #6b7280;
+            --text: #111827;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --bg: #f3f4f6;
+            --card: #ffffff;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
 
         body {
             background: var(--bg);
             color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             min-height: 100vh;
-            padding: 16px;
-        }
-
-        @media (min-width: 641px) {
-            body { padding: 24px; }
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
+            padding: 16px;
         }
 
-        h1 {
-            font-size: 22px;
+        .header {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .header h1 {
+            font-size: 20px;
             font-weight: 700;
-            margin-bottom: 24px;
+            color: var(--primary);
         }
 
-        h2 {
+        .header-badge {
+            background: var(--primary-bg);
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: var(--card);
+            border-radius: 50px;
+            padding: 6px;
+            box-shadow: var(--shadow);
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 40px;
+            background: transparent;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 100px;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-btn:active {
+            transform: scale(0.96);
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
             font-size: 17px;
             font-weight: 600;
-            margin: 24px 0 16px;
-            padding-bottom: 8px;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
             border-bottom: 2px solid var(--border);
+            color: var(--primary-dark);
         }
 
-        h3 {
+        .card h3 {
             font-size: 15px;
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
+            color: var(--text);
         }
 
-        .section {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: var(--shadow);
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
         .form-group {
@@ -81,380 +152,580 @@
             font-size: 12px;
             font-weight: 600;
             margin-bottom: 6px;
-            color: var(--text-secondary);
+            color: var(--text-light);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         input, select {
             width: 100%;
-            padding: 10px 14px;
+            padding: 12px 14px;
             border: 2px solid var(--border);
-            border-radius: 8px;
-            font-size: 16px;
-            min-height: 48px;
-            background: var(--bg);
+            border-radius: 12px;
+            font-size: 14px;
             transition: all 0.2s;
+            background: var(--bg);
         }
 
         input:focus, select:focus {
             outline: none;
             border-color: var(--primary);
-            background: var(--card-bg);
+            background: var(--card);
         }
 
-        .file-upload {
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 18px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:active {
+            background: var(--primary-dark);
+            transform: scale(0.97);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            border: 2px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-secondary:active {
+            background: var(--border);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:active {
+            background: #b91c1c;
+        }
+
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 12px;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .file-upload-area {
             border: 2px dashed var(--border);
-            border-radius: 8px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 24px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
             background: var(--bg);
         }
 
-        .file-upload:active {
+        .file-upload-area:hover {
             border-color: var(--primary);
+            background: var(--primary-bg);
         }
 
-        .file-upload input {
+        .file-upload-area input {
             display: none;
         }
 
         .file-upload-label {
             cursor: pointer;
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-
-        .preview-container {
-            margin-top: 12px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-light);
         }
 
-        .preview-container img {
-            max-width: 150px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
+        .preview-img {
+            max-width: 120px;
+            max-height: 120px;
+            border-radius: 12px;
+            object-fit: cover;
+            margin-top: 12px;
+            border: 2px solid var(--border);
         }
 
-        .btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            min-height: 50px;
-            width: 100%;
+        .vendedores-list, .produtos-list, .cancelados-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .vendedor-item, .produto-item, .cancelado-item {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             transition: all 0.2s;
         }
 
-        .btn:active {
-            background: var(--primary-hover);
-            transform: scale(0.99);
+        .vendedor-item:hover, .produto-item:hover, .cancelado-item:hover {
+            background: var(--primary-bg);
+            transform: translateX(4px);
         }
 
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-        }
-
-        .btn-small {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-size: 13px;
-            cursor: pointer;
-            min-height: 40px;
-        }
-
-        .btn-warning {
-            background: var(--warning);
-        }
-
-        .produto-item {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 14px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .produto-item-info {
-            flex: 1;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-
-        .produto-item-info strong {
-            display: block;
-            margin-bottom: 2px;
-        }
-
-        .produto-item-info span {
-            color: var(--text-secondary);
-            font-size: 13px;
-        }
-
-        .produto-item-img {
+        .produto-img {
             width: 50px;
             height: 50px;
-            border-radius: 8px;
+            border-radius: 10px;
             object-fit: cover;
-            background: #f0f0f0;
-            flex-shrink: 0;
+            background: #e5e7eb;
         }
 
-        .produto-actions {
+        .produto-info, .vendedor-info, .cancelado-info {
+            flex: 1;
+        }
+
+        .produto-info strong, .vendedor-info strong, .cancelado-info strong {
+            font-size: 14px;
+            display: block;
+        }
+
+        .produto-info span, .vendedor-info span, .cancelado-info span {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .vendedor-actions, .produto-actions {
             display: flex;
             gap: 8px;
         }
 
-        .btn-edit {
-            background: var(--warning);
+        .report-filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .report-filters input, .report-filters select {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .report-table th, .report-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        .report-table th {
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        .total-vendas {
+            background: var(--primary-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 20px;
+            text-align: center;
+            border-left: 4px solid var(--primary);
+        }
+
+        .total-vendas .label {
+            font-size: 12px;
+            color: var(--text-light);
+            text-transform: uppercase;
+        }
+
+        .total-vendas .valor {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .total-vendas .quantidade {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: 4px;
         }
 
         .alert {
-            border-radius: 8px;
-            padding: 14px 16px;
+            padding: 12px 16px;
+            border-radius: 12px;
             margin-top: 16px;
-            font-size: 14px;
-            font-weight: 500;
             display: none;
-            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
         }
 
         .alert-success {
-            background: #f0fdf4;
-            border: 1px solid #86efac;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
             color: var(--success);
+            display: block;
         }
 
         .alert-error {
             background: #fef2f2;
             border: 1px solid #fecaca;
             color: var(--danger);
+            display: block;
         }
 
-        .help-text {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 4px;
+        ::-webkit-scrollbar {
+            width: 4px;
         }
 
-        .grid-inputs {
-            display: grid;
-            gap: 12px;
-        }
-
-        @media (min-width: 641px) {
-            .grid-inputs {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        .orders-list-compact {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .order-compact {
+        ::-webkit-scrollbar-track {
             background: var(--bg);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 8px;
-            border-left: 3px solid var(--warning);
+            border-radius: 10px;
         }
 
-        .order-compact.paid {
-            border-left-color: var(--success);
-        }
-
-        .order-compact.delivered {
-            border-left-color: #888;
-            opacity: 0.7;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>⚙️ Administração FoodFlow</h1>
-
-        <!-- Estabelecimento -->
-        <div class="section">
-            <h2>🏪 Dados do Estabelecimento</h2>
-            <div class="form-group">
-                <label>Nome da Barraca</label>
-                <input type="text" id="nomeBarraca" placeholder="Ex: Barraca do Zé">
-            </div>
-            <div class="form-group">
-                <label>Senha do Painel da Equipe</label>
-                <input type="text" id="painelPassword" placeholder="Senha para acesso ao painel">
-                <div class="help-text">Use esta senha para logar no painel da cozinha</div>
-            </div>
+        <div class="header">
+            <h1>Administração</h1>
+            <div class="header-badge">Sistema de Gestão</div>
         </div>
 
-        <!-- PIX -->
-        <div class="section">
-            <h2>💰 Configuração PIX</h2>
-            <div class="form-group">
-                <label>Chave PIX</label>
-                <input type="text" id="pixKey" placeholder="CPF, e-mail, telefone ou chave aleatória">
-                <div class="help-text">Usada para gerar QR Code dinâmico</div>
-            </div>
-            <div class="form-group">
-                <label>Nome do Recebedor</label>
-                <input type="text" id="pixRecipientName" placeholder="Nome completo">
-            </div>
-            <div class="form-group">
-                <label>Cidade</label>
-                <input type="text" id="pixCity" placeholder="Ex: SAO PAULO">
-            </div>
-            <div class="form-group">
-                <label>Palavra-Chave Base</label>
-                <input type="text" id="palavraChave" placeholder="Palavra base para os pedidos">
-                <div class="help-text">Será combinada com um número único para cada pedido</div>
-            </div>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('config')">Configurações</button>
+            <button class="tab-btn" onclick="switchTab('produtos')">Produtos</button>
+            <button class="tab-btn" onclick="switchTab('vendedores')">Vendedores</button>
+            <button class="tab-btn" onclick="switchTab('relatorios')">Relatórios</button>
+            <button class="tab-btn" onclick="switchTab('cancelados')">Cancelados</button>
         </div>
 
-        <!-- QR Code Image -->
-        <div class="section">
-            <h2>📱 QR Code PIX (Opcional)</h2>
-            <div class="help-text" style="margin-bottom:12px;">
-                Faça upload da imagem do QR Code PIX. Se não enviar, o sistema gera automaticamente.
+        <!-- Aba Configurações -->
+        <div id="tabConfig" class="tab-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h2>Dados da Loja</h2>
+                    <div class="form-group">
+                        <label>Nome do Estabelecimento</label>
+                        <input type="text" id="nomeBarraca" placeholder="Digite o nome da sua loja">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Configuração PIX</h2>
+                    <div class="form-group">
+                        <label>Chave PIX</label>
+                        <input type="text" id="pixKey" placeholder="Email, CPF, telefone ou chave aleatória">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nome do Recebedor</label>
+                            <input type="text" id="pixRecipientName" placeholder="Nome completo">
+                        </div>
+                        <div class="form-group">
+                            <label>Cidade</label>
+                            <input type="text" id="pixCity" placeholder="Ex: SAO PAULO">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Palavra-Chave Base</label>
+                        <input type="text" id="palavraChave" placeholder="Palavra base para os pedidos">
+                    </div>
+                </div>
             </div>
-            <div class="file-upload">
-                <input type="file" id="qrcodeFile" accept="image/*" onchange="previewQRCode(event)">
-                <label for="qrcodeFile" class="file-upload-label">
-                    📷 Clique para selecionar imagem<br>
-                    <small>PNG, JPG ou JPEG (máx 2MB)</small>
-                </label>
+
+            <div class="card">
+                <h2>QR Code Estático</h2>
+                <p style="font-size: 13px; color: var(--text-light); margin-bottom: 16px;">Opcional - Use se já possui um QR Code PIX fixo</p>
+                
+                <div class="file-upload-area" onclick="document.getElementById('qrcodeFile').click()">
+                    <input type="file" id="qrcodeFile" accept="image/*" onchange="previewQRCode(event)">
+                    <div class="file-upload-label">
+                        <span style="font-size: 24px;">📷</span>
+                        <span>Clique para selecionar uma imagem</span>
+                        <small>PNG, JPG ou JPEG (máx 2MB)</small>
+                    </div>
+                </div>
+                <div id="previewContainer" style="display: none; text-align: center; margin-top: 16px;">
+                    <img id="previewImage" class="preview-img" src="" alt="Preview">
+                    <button class="btn btn-secondary btn-sm" onclick="removerQRCode()" style="margin-top: 12px;">Remover imagem</button>
+                </div>
             </div>
-            <div class="preview-container" id="previewContainer" style="display:none;">
-                <img id="previewImage" src="" alt="Preview QR Code">
-            </div>
-            <button class="btn btn-outline" onclick="removerQRCode()" id="btnRemover" style="display:none;margin-top:12px;">
-                Remover imagem
-            </button>
+
+            <button class="btn btn-primary btn-block" onclick="salvarConfig()" style="margin-bottom: 20px;">Salvar Configurações</button>
         </div>
 
-        <!-- Produtos -->
-        <div class="section">
-            <h2>🍔 Produtos</h2>
-            <div id="listaProdutos"></div>
-            <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
-                <h3 id="formTitle">➕ Adicionar Produto</h3>
-                <div class="grid-inputs">
+        <!-- Aba Produtos -->
+        <div id="tabProdutos" class="tab-content" style="display: none;">
+            <div class="card">
+                <h2>Produtos Cadastrados</h2>
+                <div class="produtos-list" id="listaProdutos"></div>
+            </div>
+
+            <div class="card">
+                <h3 id="formTitle">Adicionar Novo Produto</h3>
+                <div class="form-row">
                     <div class="form-group">
                         <label>Nome</label>
                         <input type="text" id="novoNome" placeholder="Nome do produto">
                     </div>
                     <div class="form-group">
                         <label>Preço (R$)</label>
-                        <input type="number" id="novoPreco" placeholder="0.00" step="0.01" min="0">
-                    </div>
-                </div>
-                <div class="grid-inputs">
-                    <div class="form-group">
-                        <label>Descrição</label>
-                        <input type="text" id="novoDescricao" placeholder="Breve descrição">
-                    </div>
-                    <div class="form-group">
-                        <label>Categoria/Emoji</label>
-                        <select id="novoCategoria">
-                            <option value="🍔">🍔 Hambúrguer</option>
-                            <option value="🍟">🍟 Porções/Fritas</option>
-                            <option value="🥤">🥤 Bebidas/Sucos</option>
-                            <option value="🥙">🥙 Pastéis/Salgados</option>
-                            <option value="🍰">🍰 Sobremesas</option>
-                        </select>
+                        <input type="number" id="novoPreco" placeholder="0,00" step="0.01" min="0">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>URL da Imagem</label>
-                    <input type="text" id="novoImagem" placeholder="https://... ou deixe em branco para imagem padrão">
+                    <label>Descrição</label>
+                    <input type="text" id="novoDescricao" placeholder="Descrição do produto">
+                </div>
+                
+                <div class="form-group">
+                    <label>Imagem do Produto</label>
+                    <div class="file-upload-area" onclick="document.getElementById('produtoImagemFile').click()" style="padding: 16px;">
+                        <input type="file" id="produtoImagemFile" accept="image/*" onchange="converterImagemBase64(event)">
+                        <div class="file-upload-label">
+                            <span style="font-size: 20px;">🖼️</span>
+                            <span>Clique para selecionar uma imagem</span>
+                            <small>A imagem será convertida para Base64</small>
+                        </div>
+                    </div>
+                    <div id="produtoPreviewContainer" style="display: none; text-align: center; margin-top: 12px;">
+                        <img id="produtoPreviewImage" class="preview-img" src="" alt="Preview">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="removerImagemProduto()" style="margin-top: 8px;">Remover imagem</button>
+                    </div>
+                    <input type="hidden" id="produtoImagemBase64" value="">
+                </div>
+
+                <div class="form-group">
+                    <label>Categoria</label>
+                    <select id="novoCategoria">
+                        <option value="Hamburguer">Hambúrguer</option>
+                        <option value="Porcoes">Porções / Fritas</option>
+                        <option value="Bebidas">Bebidas / Sucos</option>
+                        <option value="Salgados">Pastéis / Salgados</option>
+                        <option value="Sobremesas">Sobremesas</option>
+                        <option value="Carnes">Frango / Carnes</option>
+                    </select>
                 </div>
                 <input type="hidden" id="editandoId" value="">
-                <div class="button-group">
-                    <button class="btn" onclick="salvarProduto()" id="btnSalvar">Adicionar Produto</button>
-                    <button class="btn btn-outline" onclick="cancelarEdicao()" id="btnCancelar" style="display:none;">Cancelar</button>
+                <div style="display: flex; gap: 10px; margin-top: 16px;">
+                    <button class="btn btn-primary" id="btnSalvar" onclick="salvarProduto()" style="flex: 1;">Adicionar</button>
+                    <button class="btn btn-secondary" id="btnCancelar" onclick="cancelarEdicao()" style="display: none; flex: 1;">Cancelar</button>
                 </div>
             </div>
         </div>
 
-        <!-- Pedidos do Dia (Admin) -->
-        <div class="section">
-            <h2>📋 Pedidos do Dia</h2>
-            <div id="listaPedidosAdmin" class="orders-list-compact">
-                <p style="color:var(--text-secondary);text-align:center;padding:20px;">Carregando...</p>
+        <!-- Aba Vendedores -->
+        <div id="tabVendedores" class="tab-content" style="display: none;">
+            <div class="card">
+                <h2>Vendedores</h2>
+                <div class="vendedores-list" id="listaVendedores"></div>
             </div>
-            <button class="btn btn-outline" onclick="exportarPedidosCSV()" style="margin-top:12px;">📊 Exportar Relatório CSV</button>
-            <button class="btn btn-outline" onclick="limparPedidosAntigos()" style="margin-top:8px;">🗑️ Limpar Pedidos Antigos</button>
+
+            <div class="card">
+                <h3 id="vendedorFormTitle">Adicionar Vendedor</h3>
+                <div class="form-group">
+                    <label>Nome do Vendedor</label>
+                    <input type="text" id="vendedorNome" placeholder="Digite o nome completo">
+                </div>
+                <input type="hidden" id="editandoVendedorId" value="">
+                <div style="display: flex; gap: 10px; margin-top: 16px;">
+                    <button class="btn btn-primary" id="btnSalvarVendedor" onclick="salvarVendedor()" style="flex: 1;">Adicionar Vendedor</button>
+                    <button class="btn btn-secondary" id="btnCancelarVendedor" onclick="cancelarEdicaoVendedor()" style="display: none; flex: 1;">Cancelar</button>
+                </div>
+            </div>
         </div>
 
-        <button class="btn" onclick="salvarConfig()" style="margin-top:8px;">💾 Salvar Todas as Configurações</button>
+        <!-- Aba Relatórios -->
+        <div id="tabRelatorios" class="tab-content" style="display: none;">
+            <div class="card">
+                <h2>Relatório por Vendedor</h2>
+                <div class="report-filters">
+                    <input type="date" id="relatorioDataInicio" placeholder="Data inicial">
+                    <input type="date" id="relatorioDataFim" placeholder="Data final">
+                    <select id="relatorioVendedor">
+                        <option value="">Todos os vendedores</option>
+                    </select>
+                    <button class="btn btn-primary btn-sm" onclick="gerarRelatorioVendedor()">Filtrar</button>
+                </div>
+                <div id="relatorioVendedorResultado"></div>
+            </div>
+
+            <div class="card">
+                <h2>Relatório por Produto</h2>
+                <div class="report-filters">
+                    <input type="date" id="produtoDataInicio" placeholder="Data inicial">
+                    <input type="date" id="produtoDataFim" placeholder="Data final">
+                    <button class="btn btn-primary btn-sm" onclick="gerarRelatorioProduto()">Filtrar</button>
+                </div>
+                <div id="relatorioProdutoResultado"></div>
+            </div>
+
+            <!-- Card para Excluir Vendas -->
+            <div class="card" style="border-left: 4px solid var(--danger);">
+                <h2 style="color: var(--danger);">Área de Manutenção</h2>
+                <p style="font-size: 13px; color: var(--text-light); margin-bottom: 16px;">
+                    Esta ação remove permanentemente todos os pedidos com status <strong>Pago</strong> ou <strong>Entregue</strong>.
+                    Pedidos <strong>Aguardando Pagamento</strong> e <strong>Cancelados</strong> não serão removidos.
+                </p>
+                <div class="report-filters">
+                    <input type="date" id="excluirDataInicio" placeholder="Data inicial (opcional)">
+                    <input type="date" id="excluirDataFim" placeholder="Data final (opcional)">
+                    <select id="excluirVendedor">
+                        <option value="">Todos os vendedores</option>
+                    </select>
+                    <button class="btn btn-danger btn-sm" onclick="excluirVendas()" style="background: var(--danger); color: white;">Excluir Vendas Selecionadas</button>
+                </div>
+                <div id="excluirResultado" style="margin-top: 12px; font-size: 12px;"></div>
+            </div>
+        </div>
+
+        <!-- Aba Cancelados -->
+        <div id="tabCancelados" class="tab-content" style="display: none;">
+            <div class="card">
+                <h2>Pedidos Cancelados</h2>
+                <div class="report-filters">
+                    <input type="date" id="canceladosDataInicio" placeholder="Data inicial">
+                    <input type="date" id="canceladosDataFim" placeholder="Data final">
+                    <select id="canceladosVendedor">
+                        <option value="">Todos os vendedores</option>
+                    </select>
+                    <button class="btn btn-primary btn-sm" onclick="carregarCancelados()">Filtrar</button>
+                </div>
+                <div id="listaCancelados" class="cancelados-list">
+                    <p style="text-align:center;padding:30px;">Carregando...</p>
+                </div>
+            </div>
+        </div>
+
         <div id="alertBox" class="alert"></div>
     </div>
 
     <script>
-        // ===== CONSTANTES =====
-        const STORAGE_KEYS = {
+        const STORAGE = {
             CONFIG: 'configFeira',
-            PRODUCTS: 'produtosFeira',
-            ORDERS: 'evento_pedidos'
+            PRODUTOS: 'produtosFeira',
+            PEDIDOS: 'evento_pedidos',
+            VENDEDORES: 'vendedores',
+            SEQUENCIA: 'sequenciaVendedor'
         };
 
-        let CONFIG = JSON.parse(localStorage.getItem(STORAGE_KEYS.CONFIG) || '{}');
-        let PRODUCTS = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
-        let qrcodeImageData = CONFIG.qrcodeImage || null;
+        let config = JSON.parse(localStorage.getItem(STORAGE.CONFIG) || '{}');
+        let produtos = JSON.parse(localStorage.getItem(STORAGE.PRODUTOS) || '[]');
+        let vendedores = JSON.parse(localStorage.getItem(STORAGE.VENDEDORES) || '[]');
+        let qrcodeImageData = config.qrcodeImage || null;
         let editandoId = null;
+        let produtoImagemBase64Temp = '';
+        let editandoVendedorId = null;
+
+        // Vendedores iniciais
+        if (vendedores.length === 0) {
+            vendedores = [
+                { id: 1, nome: 'Ana Silva' },
+                { id: 2, nome: 'Carlos Oliveira' },
+                { id: 3, nome: 'Mariana Santos' },
+                { id: 4, nome: 'Roberto Almeida' },
+                { id: 5, nome: 'Fernanda Costa' },
+                { id: 6, nome: 'Lucas Pereira' }
+            ];
+            localStorage.setItem(STORAGE.VENDEDORES, JSON.stringify(vendedores));
+        }
 
         // Produtos padrão
-        if (PRODUCTS.length === 0) {
-            PRODUCTS = [
-                { id: 1, nome: 'Hambúrguer Artesanal', descricao: 'Carne 180g, queijo cheddar, bacon, alface e tomate', preco: 28.00, imagem: 'https://picsum.photos/id/302/400/400', categoria: '🍔' },
-                { id: 2, nome: 'Porção de Fritas', descricao: 'Batatas crocantes 300g', preco: 18.00, imagem: 'https://picsum.photos/id/300/400/400', categoria: '🍟' },
-                { id: 3, nome: 'Pastel de Carne', descricao: 'Massa crocante, recheio generoso', preco: 12.00, imagem: 'https://picsum.photos/id/301/400/400', categoria: '🥙' },
-                { id: 4, nome: 'Suco Natural', descricao: 'Laranja, limão ou maracujá 500ml', preco: 8.00, imagem: 'https://picsum.photos/id/315/400/400', categoria: '🥤' }
+        if (produtos.length === 0) {
+            produtos = [
+                { id: 1, nome: 'Hambúrguer Artesanal', descricao: 'Carne 180g, queijo cheddar, bacon, alface e tomate', preco: 28.00, imagem: '', categoria: 'Hamburguer' },
+                { id: 2, nome: 'Porção de Fritas', descricao: 'Batatas crocantes 300g com molho especial', preco: 18.00, imagem: '', categoria: 'Porcoes' },
+                { id: 3, nome: 'Pastel de Carne', descricao: 'Massa crocante, recheio generoso', preco: 12.00, imagem: '', categoria: 'Salgados' },
+                { id: 4, nome: 'Suco Natural', descricao: 'Laranja, limão ou maracujá 500ml', preco: 8.00, imagem: '', categoria: 'Bebidas' },
+                { id: 5, nome: 'Frango à Passarinho', descricao: 'Porção 400g com limão', preco: 32.00, imagem: '', categoria: 'Carnes' },
+                { id: 6, nome: 'Petit Gâteau', descricao: 'Com sorvete de creme', preco: 15.00, imagem: '', categoria: 'Sobremesas' }
             ];
-            localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(PRODUCTS));
+            localStorage.setItem(STORAGE.PRODUTOS, JSON.stringify(produtos));
         }
 
         function init() {
-            document.getElementById('nomeBarraca').value = CONFIG.nomeBarraca || '';
-            document.getElementById('pixKey').value = CONFIG.pixKey || '';
-            document.getElementById('pixRecipientName').value = CONFIG.pixRecipientName || '';
-            document.getElementById('pixCity').value = CONFIG.pixCity || '';
-            document.getElementById('palavraChave').value = CONFIG.palavraChave || 'FOODFLOW';
-            document.getElementById('painelPassword').value = CONFIG.painelPassword || '1234';
+            document.getElementById('nomeBarraca').value = config.nomeBarraca || '';
+            document.getElementById('pixKey').value = config.pixKey || '';
+            document.getElementById('pixRecipientName').value = config.pixRecipientName || '';
+            document.getElementById('pixCity').value = config.pixCity || '';
+            document.getElementById('palavraChave').value = config.palavraChave || 'FOODFLOW';
             
             if (qrcodeImageData) {
                 document.getElementById('previewImage').src = qrcodeImageData;
-                document.getElementById('previewContainer').style.display = 'flex';
-                document.getElementById('btnRemover').style.display = 'block';
+                document.getElementById('previewContainer').style.display = 'block';
             }
             
             renderizarProdutos();
-            carregarPedidosAdmin();
+            renderizarVendedores();
+            carregarVendedoresSelect();
+            carregarCancelados();
         }
 
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+            document.getElementById(`tab${tab.charAt(0).toUpperCase() + tab.slice(1)}`).style.display = 'block';
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'cancelados') {
+                carregarCancelados();
+            }
+        }
+
+        // Upload Imagem Produto
+        function converterImagemBase64(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (file.size > 2 * 1024 * 1024) {
+                mostrarAlerta('Imagem muito grande. Máximo 2MB.', false);
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                produtoImagemBase64Temp = e.target.result;
+                document.getElementById('produtoPreviewImage').src = produtoImagemBase64Temp;
+                document.getElementById('produtoPreviewContainer').style.display = 'block';
+                document.getElementById('produtoImagemBase64').value = produtoImagemBase64Temp;
+                mostrarAlerta('Imagem convertida com sucesso!', true);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removerImagemProduto() {
+            produtoImagemBase64Temp = '';
+            document.getElementById('produtoPreviewContainer').style.display = 'none';
+            document.getElementById('produtoPreviewImage').src = '';
+            document.getElementById('produtoImagemBase64').value = '';
+            document.getElementById('produtoImagemFile').value = '';
+        }
+
+        // Upload QR Code
         function previewQRCode(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -466,8 +737,8 @@
             reader.onload = function(e) {
                 qrcodeImageData = e.target.result;
                 document.getElementById('previewImage').src = qrcodeImageData;
-                document.getElementById('previewContainer').style.display = 'flex';
-                document.getElementById('btnRemover').style.display = 'block';
+                document.getElementById('previewContainer').style.display = 'block';
+                mostrarAlerta('QR Code carregado com sucesso!', true);
             };
             reader.readAsDataURL(file);
         }
@@ -476,44 +747,47 @@
             qrcodeImageData = null;
             document.getElementById('previewImage').src = '';
             document.getElementById('previewContainer').style.display = 'none';
-            document.getElementById('btnRemover').style.display = 'none';
             document.getElementById('qrcodeFile').value = '';
             mostrarAlerta('QR Code removido', true);
         }
 
         function renderizarProdutos() {
             const lista = document.getElementById('listaProdutos');
-            if (PRODUCTS.length === 0) {
-                lista.innerHTML = '<p style="color:var(--text-secondary);font-size:14px;text-align:center;padding:20px;">Nenhum produto</p>';
+            if (produtos.length === 0) {
+                lista.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:30px;">Nenhum produto cadastrado</p>';
                 return;
             }
-            lista.innerHTML = PRODUCTS.map(produto => `
+            lista.innerHTML = produtos.map(p => `
                 <div class="produto-item">
-                    ${produto.imagem ? `<img class="produto-item-img" src="${produto.imagem}" alt="${produto.nome}" onerror="this.style.display='none'">` : '<div class="produto-item-img" style="display:flex;align-items:center;justify-content:center;">📷</div>'}
-                    <div class="produto-item-info">
-                        <strong>${produto.categoria || '🍔'} ${produto.nome}</strong>
-                        <span>${produto.descricao || 'Sem descrição'} • R$ ${parseFloat(produto.preco).toFixed(2)}</span>
+                    ${p.imagem ? `<img class="produto-img" src="${p.imagem}" alt="${p.nome}">` : '<div class="produto-img" style="display:flex;align-items:center;justify-content:center;background:#e5e7eb;">📷</div>'}
+                    <div class="produto-info">
+                        <strong>${p.categoria || 'Produto'} - ${p.nome}</strong>
+                        <span>R$ ${p.preco.toFixed(2)} • ${p.descricao || ''}</span>
                     </div>
                     <div class="produto-actions">
-                        <button class="btn-small btn-edit" onclick="editarProduto(${produto.id})">✏️</button>
-                        <button class="btn-small" onclick="removerProduto(${produto.id})">🗑️</button>
+                        <button class="btn btn-secondary btn-sm" onclick="editarProduto(${p.id})">Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="removerProduto(${p.id})">Remover</button>
                     </div>
                 </div>
             `).join('');
         }
 
         function editarProduto(id) {
-            const produto = PRODUCTS.find(p => p.id === id);
+            const produto = produtos.find(p => p.id === id);
             if (!produto) return;
-            
             editandoId = id;
             document.getElementById('novoNome').value = produto.nome;
             document.getElementById('novoPreco').value = produto.preco;
             document.getElementById('novoDescricao').value = produto.descricao || '';
-            document.getElementById('novoImagem').value = produto.imagem || '';
-            document.getElementById('novoCategoria').value = produto.categoria || '🍔';
-            document.getElementById('formTitle').textContent = '✏️ Editando Produto';
-            document.getElementById('btnSalvar').textContent = 'Atualizar Produto';
+            document.getElementById('novoCategoria').value = produto.categoria || 'Hamburguer';
+            if (produto.imagem) {
+                produtoImagemBase64Temp = produto.imagem;
+                document.getElementById('produtoPreviewImage').src = produto.imagem;
+                document.getElementById('produtoPreviewContainer').style.display = 'block';
+                document.getElementById('produtoImagemBase64').value = produto.imagem;
+            }
+            document.getElementById('formTitle').textContent = 'Editando Produto';
+            document.getElementById('btnSalvar').textContent = 'Atualizar';
             document.getElementById('btnCancelar').style.display = 'block';
         }
 
@@ -522,10 +796,10 @@
             document.getElementById('novoNome').value = '';
             document.getElementById('novoPreco').value = '';
             document.getElementById('novoDescricao').value = '';
-            document.getElementById('novoImagem').value = '';
-            document.getElementById('novoCategoria').value = '🍔';
-            document.getElementById('formTitle').textContent = '➕ Adicionar Produto';
-            document.getElementById('btnSalvar').textContent = 'Adicionar Produto';
+            document.getElementById('novoCategoria').value = 'Hamburguer';
+            removerImagemProduto();
+            document.getElementById('formTitle').textContent = 'Adicionar Novo Produto';
+            document.getElementById('btnSalvar').textContent = 'Adicionar';
             document.getElementById('btnCancelar').style.display = 'none';
         }
 
@@ -533,126 +807,297 @@
             const nome = document.getElementById('novoNome').value.trim();
             const preco = parseFloat(document.getElementById('novoPreco').value);
             const descricao = document.getElementById('novoDescricao').value.trim();
-            const imagem = document.getElementById('novoImagem').value.trim();
             const categoria = document.getElementById('novoCategoria').value;
+            const imagem = produtoImagemBase64Temp || '';
 
-            if (!nome) { mostrarAlerta('Digite o nome', false); return; }
+            if (!nome) { mostrarAlerta('Digite o nome do produto', false); return; }
             if (!preco || preco <= 0) { mostrarAlerta('Preço inválido', false); return; }
 
             if (editandoId) {
-                const index = PRODUCTS.findIndex(p => p.id === editandoId);
+                const index = produtos.findIndex(p => p.id === editandoId);
                 if (index !== -1) {
-                    PRODUCTS[index] = {
-                        ...PRODUCTS[index],
-                        nome, preco, descricao, imagem: imagem || '', categoria
-                    };
-                    mostrarAlerta('Produto atualizado', true);
+                    produtos[index] = { ...produtos[index], nome, preco, descricao, imagem, categoria };
+                    mostrarAlerta('Produto atualizado com sucesso!', true);
                 }
                 editandoId = null;
             } else {
-                PRODUCTS.push({
-                    id: Date.now(),
-                    nome,
-                    preco,
-                    descricao,
-                    imagem: imagem || '',
-                    categoria
-                });
-                mostrarAlerta('Produto adicionado', true);
+                produtos.push({ id: Date.now(), nome, preco, descricao, imagem, categoria });
+                mostrarAlerta('Produto adicionado com sucesso!', true);
             }
-
-            localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(PRODUCTS));
-            
-            document.getElementById('novoNome').value = '';
-            document.getElementById('novoPreco').value = '';
-            document.getElementById('novoDescricao').value = '';
-            document.getElementById('novoImagem').value = '';
-            document.getElementById('formTitle').textContent = '➕ Adicionar Produto';
-            document.getElementById('btnSalvar').textContent = 'Adicionar Produto';
-            document.getElementById('btnCancelar').style.display = 'none';
-            
+            localStorage.setItem(STORAGE.PRODUTOS, JSON.stringify(produtos));
+            cancelarEdicao();
             renderizarProdutos();
         }
 
         function removerProduto(id) {
-            if (confirm('Remover este produto?')) {
-                PRODUCTS = PRODUCTS.filter(p => p.id !== id);
-                localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(PRODUCTS));
+            if (confirm('Remover este produto permanentemente?')) {
+                produtos = produtos.filter(p => p.id !== id);
+                localStorage.setItem(STORAGE.PRODUTOS, JSON.stringify(produtos));
                 renderizarProdutos();
                 mostrarAlerta('Produto removido', true);
             }
         }
 
-        function carregarPedidosAdmin() {
-            const pedidos = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
-            const container = document.getElementById('listaPedidosAdmin');
+        function renderizarVendedores() {
+            const lista = document.getElementById('listaVendedores');
+            if (vendedores.length === 0) {
+                lista.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:30px;">Nenhum vendedor cadastrado</p>';
+                return;
+            }
+            lista.innerHTML = vendedores.map(v => `
+                <div class="vendedor-item">
+                    <div class="vendedor-info"><strong>${v.nome}</strong></div>
+                    <div class="vendedor-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="editarVendedor(${v.id})">Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="removerVendedor(${v.id})">Remover</button>
+                    </div>
+                </div>
+            `).join('');
+            carregarVendedoresSelect();
+        }
+
+        function editarVendedor(id) {
+            const vendedor = vendedores.find(v => v.id === id);
+            if (!vendedor) return;
+            editandoVendedorId = id;
+            document.getElementById('vendedorNome').value = vendedor.nome;
+            document.getElementById('vendedorFormTitle').textContent = 'Editando Vendedor';
+            document.getElementById('btnSalvarVendedor').textContent = 'Atualizar';
+            document.getElementById('btnCancelarVendedor').style.display = 'block';
+        }
+
+        function cancelarEdicaoVendedor() {
+            editandoVendedorId = null;
+            document.getElementById('vendedorNome').value = '';
+            document.getElementById('vendedorFormTitle').textContent = 'Adicionar Vendedor';
+            document.getElementById('btnSalvarVendedor').textContent = 'Adicionar Vendedor';
+            document.getElementById('btnCancelarVendedor').style.display = 'none';
+        }
+
+        function salvarVendedor() {
+            const nome = document.getElementById('vendedorNome').value.trim();
+            if (!nome) { mostrarAlerta('Digite o nome do vendedor', false); return; }
+
+            if (editandoVendedorId) {
+                const index = vendedores.findIndex(v => v.id === editandoVendedorId);
+                if (index !== -1) {
+                    vendedores[index].nome = nome;
+                    mostrarAlerta('Vendedor atualizado!', true);
+                }
+                editandoVendedorId = null;
+            } else {
+                vendedores.push({ id: Date.now(), nome });
+                mostrarAlerta('Vendedor adicionado!', true);
+            }
+            localStorage.setItem(STORAGE.VENDEDORES, JSON.stringify(vendedores));
+            cancelarEdicaoVendedor();
+            renderizarVendedores();
+        }
+
+        function removerVendedor(id) {
+            if (vendedores.length <= 1) {
+                mostrarAlerta('Deve haver pelo menos um vendedor!', false);
+                return;
+            }
+            if (confirm('Remover este vendedor?')) {
+                vendedores = vendedores.filter(v => v.id !== id);
+                localStorage.setItem(STORAGE.VENDEDORES, JSON.stringify(vendedores));
+                renderizarVendedores();
+                mostrarAlerta('Vendedor removido', true);
+            }
+        }
+
+        function carregarVendedoresSelect() {
+            const select = document.getElementById('relatorioVendedor');
+            const selectCancelados = document.getElementById('canceladosVendedor');
+            const selectExcluir = document.getElementById('excluirVendedor');
             
-            if (pedidos.length === 0) {
-                container.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:20px;">Nenhum pedido realizado hoje</p>';
+            select.innerHTML = '<option value="">Todos os vendedores</option>';
+            selectCancelados.innerHTML = '<option value="">Todos os vendedores</option>';
+            selectExcluir.innerHTML = '<option value="">Todos os vendedores</option>';
+            
+            vendedores.forEach(v => {
+                select.innerHTML += `<option value="${v.nome}">${v.nome}</option>`;
+                selectCancelados.innerHTML += `<option value="${v.nome}">${v.nome}</option>`;
+                selectExcluir.innerHTML += `<option value="${v.nome}">${v.nome}</option>`;
+            });
+        }
+
+        function carregarCancelados() {
+            const pedidos = JSON.parse(localStorage.getItem(STORAGE.PEDIDOS) || '[]');
+            const dataInicio = document.getElementById('canceladosDataInicio').value;
+            const dataFim = document.getElementById('canceladosDataFim').value;
+            const vendedorFiltro = document.getElementById('canceladosVendedor').value;
+            
+            let cancelados = pedidos.filter(p => p.status === 'canceled');
+            
+            if (dataInicio) cancelados = cancelados.filter(p => new Date(p.canceledAt) >= new Date(dataInicio));
+            if (dataFim) cancelados = cancelados.filter(p => new Date(p.canceledAt) <= new Date(dataFim + 'T23:59:59'));
+            if (vendedorFiltro) cancelados = cancelados.filter(p => p.vendedorResponsavel === vendedorFiltro);
+            
+            cancelados.sort((a, b) => new Date(b.canceledAt) - new Date(a.canceledAt));
+            
+            const container = document.getElementById('listaCancelados');
+            if (cancelados.length === 0) {
+                container.innerHTML = '<p style="text-align:center;padding:30px;">Nenhum pedido cancelado</p>';
                 return;
             }
             
-            const hoje = new Date().toDateString();
-            const pedidosHoje = pedidos.filter(p => new Date(p.createdAt).toDateString() === hoje);
-            
-            if (pedidosHoje.length === 0) {
-                container.innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:20px;">Nenhum pedido hoje</p>';
-                return;
-            }
-            
-            container.innerHTML = pedidosHoje.map(pedido => `
-                <div class="order-compact ${pedido.status}">
-                    <strong>${pedido.orderId}</strong> - ${pedido.customerName}<br>
-                    <small>${pedido.items.length} itens • R$ ${pedido.total.toFixed(2)}</small><br>
-                    <small>Status: ${pedido.status === 'awaiting_payment' ? '⏳ Aguardando' : pedido.status === 'paid' ? '✅ Pago' : '📦 Entregue'}</small>
+            container.innerHTML = cancelados.map(p => `
+                <div class="cancelado-item" style="border-left: 3px solid #6b7280;">
+                    <div class="cancelado-info">
+                        <strong>${p.orderId} - ${p.customerName}</strong>
+                        <span>Valor: R$ ${p.total.toFixed(2)} • Vendedor: ${p.vendedorResponsavel} • Cancelado por: ${p.canceledBy || 'Sistema'}</span>
+                        <span>Cancelado em: ${new Date(p.canceledAt).toLocaleString()}</span>
+                        <span>Itens: ${p.items.map(i => `${i.qty}x ${i.name}`).join(', ')}</span>
+                    </div>
                 </div>
             `).join('');
         }
 
-        function exportarPedidosCSV() {
-            const pedidos = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
-            if (pedidos.length === 0) {
-                mostrarAlerta('Nenhum pedido para exportar', false);
+        function gerarRelatorioVendedor() {
+            const pedidos = JSON.parse(localStorage.getItem(STORAGE.PEDIDOS) || '[]');
+            const dataInicio = document.getElementById('relatorioDataInicio').value;
+            const dataFim = document.getElementById('relatorioDataFim').value;
+            const vendedorFiltro = document.getElementById('relatorioVendedor').value;
+            
+            let filtrados = pedidos.filter(p => p.status === 'paid' || p.status === 'delivered');
+            
+            if (dataInicio) filtrados = filtrados.filter(p => new Date(p.createdAt) >= new Date(dataInicio));
+            if (dataFim) filtrados = filtrados.filter(p => new Date(p.createdAt) <= new Date(dataFim + 'T23:59:59'));
+            if (vendedorFiltro) filtrados = filtrados.filter(p => p.vendedorResponsavel === vendedorFiltro);
+            
+            const vendasPorVendedor = {};
+            filtrados.forEach(p => {
+                const vendedor = p.vendedorResponsavel || 'Não atribuído';
+                if (!vendasPorVendedor[vendedor]) vendasPorVendedor[vendedor] = { total: 0, qtd: 0 };
+                vendasPorVendedor[vendedor].total += p.total;
+                vendasPorVendedor[vendedor].qtd++;
+            });
+            
+            let html = '<table class="report-table"><tr><th>Vendedor</th><th>Qtd Pedidos</th><th>Total Vendido</th></tr>';
+            for (const [vendedor, dados] of Object.entries(vendasPorVendedor)) {
+                html += `<tr><td>${vendedor}</td>日起${dados.qtd}</td>日起R$ ${dados.total.toFixed(2)}</td></tr>`;
+            }
+            html += '</table>';
+            if (Object.keys(vendasPorVendedor).length === 0) html = '<p style="text-align:center;padding:20px;">Nenhum pedido encontrado</p>';
+            document.getElementById('relatorioVendedorResultado').innerHTML = html;
+        }
+
+        function gerarRelatorioProduto() {
+            const pedidos = JSON.parse(localStorage.getItem(STORAGE.PEDIDOS) || '[]');
+            const dataInicio = document.getElementById('produtoDataInicio').value;
+            const dataFim = document.getElementById('produtoDataFim').value;
+            
+            let filtrados = pedidos.filter(p => p.status === 'paid' || p.status === 'delivered');
+            if (dataInicio) filtrados = filtrados.filter(p => new Date(p.createdAt) >= new Date(dataInicio));
+            if (dataFim) filtrados = filtrados.filter(p => new Date(p.createdAt) <= new Date(dataFim + 'T23:59:59'));
+            
+            const vendasPorProduto = {};
+            let totalGeral = 0;
+            let quantidadeTotal = 0;
+            
+            filtrados.forEach(p => {
+                p.items.forEach(item => {
+                    if (!vendasPorProduto[item.name]) vendasPorProduto[item.name] = { qtd: 0, total: 0 };
+                    vendasPorProduto[item.name].qtd += item.qty;
+                    vendasPorProduto[item.name].total += (item.price * item.qty);
+                    quantidadeTotal += item.qty;
+                    totalGeral += (item.price * item.qty);
+                });
+            });
+            
+            let html = '<table class="report-table">';
+            html += '<tr><th>Produto</th><th>Qtd Vendida</th><th>Total</th></tr>';
+            
+            for (const [produto, dados] of Object.entries(vendasPorProduto)) {
+                html += `<tr><td>${produto}</td><td>${dados.qtd}</td><td>R$ ${dados.total.toFixed(2)}</td></tr>`;
+            }
+            html += '</table>';
+            
+            html += `
+                <div class="total-vendas">
+                    <div class="label">TOTAL GERAL DE VENDAS</div>
+                    <div class="valor">R$ ${totalGeral.toFixed(2)}</div>
+                    <div class="quantidade">${quantidadeTotal} produtos vendidos</div>
+                </div>
+            `;
+            
+            if (Object.keys(vendasPorProduto).length === 0) {
+                html = '<p style="text-align:center;padding:20px;">Nenhum pedido encontrado</p>';
+            }
+            
+            document.getElementById('relatorioProdutoResultado').innerHTML = html;
+        }
+
+        // Função para excluir vendas
+        function excluirVendas() {
+            const dataInicio = document.getElementById('excluirDataInicio').value;
+            const dataFim = document.getElementById('excluirDataFim').value;
+            const vendedorFiltro = document.getElementById('excluirVendedor').value;
+            
+            let pedidos = JSON.parse(localStorage.getItem(STORAGE.PEDIDOS) || '[]');
+            let pedidosRemovidos = 0;
+            
+            let pedidosManter = pedidos.filter(p => {
+                const statusManter = (p.status !== 'paid' && p.status !== 'delivered');
+                
+                if (statusManter) return true;
+                
+                let remover = true;
+                
+                if (dataInicio) {
+                    const dataPedido = new Date(p.createdAt);
+                    if (dataPedido < new Date(dataInicio)) remover = false;
+                }
+                
+                if (dataFim) {
+                    const dataPedido = new Date(p.createdAt);
+                    if (dataPedido > new Date(dataFim + 'T23:59:59')) remover = false;
+                }
+                
+                if (vendedorFiltro && p.vendedorResponsavel !== vendedorFiltro) {
+                    remover = false;
+                }
+                
+                if (remover) {
+                    pedidosRemovidos++;
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            if (pedidosRemovidos === 0) {
+                document.getElementById('excluirResultado').innerHTML = '<span style="color: var(--warning);">Nenhuma venda encontrada com os filtros selecionados.</span>';
+                setTimeout(() => {
+                    document.getElementById('excluirResultado').innerHTML = '';
+                }, 3000);
                 return;
             }
             
-            let csv = "ID do Pedido,Cliente,Total,Status,Data,Hora,Itens\n";
-            pedidos.forEach(p => {
-                const data = new Date(p.createdAt);
-                const itens = p.items.map(i => `${i.qty}x ${i.name}`).join(' | ');
-                csv += `"${p.orderId}","${p.customerName}",${p.total.toFixed(2)},"${p.status}","${data.toLocaleDateString()}","${data.toLocaleTimeString()}","${itens}"\n`;
-            });
-            
-            const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.href = url;
-            link.setAttribute("download", `pedidos_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            
-            mostrarAlerta('Relatório exportado!', true);
-        }
-
-        function limparPedidosAntigos() {
-            const pedidos = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
-            const hoje = new Date();
-            const pedidosRecentes = pedidos.filter(p => {
-                const dataPedido = new Date(p.createdAt);
-                const diffDias = (hoje - dataPedido) / (1000 * 60 * 60 * 24);
-                return diffDias <= 7;
-            });
-            localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(pedidosRecentes));
-            carregarPedidosAdmin();
-            mostrarAlerta(`Removidos ${pedidos.length - pedidosRecentes.length} pedidos antigos`, true);
+            if (confirm(`ATENÇÃO! Você está prestes a excluir ${pedidosRemovidos} venda(s) permanentemente.\n\nEsta ação NÃO pode ser desfeita!\n\nDeseja continuar?`)) {
+                localStorage.setItem(STORAGE.PEDIDOS, JSON.stringify(pedidosManter));
+                mostrarAlerta(`${pedidosRemovidos} venda(s) removida(s) com sucesso!`, true);
+                
+                document.getElementById('excluirDataInicio').value = '';
+                document.getElementById('excluirDataFim').value = '';
+                document.getElementById('excluirVendedor').value = '';
+                
+                gerarRelatorioVendedor();
+                gerarRelatorioProduto();
+                carregarCancelados();
+                
+                document.getElementById('excluirResultado').innerHTML = `<span style="color: var(--success);">${pedidosRemovidos} venda(s) removida(s).</span>`;
+                setTimeout(() => {
+                    document.getElementById('excluirResultado').innerHTML = '';
+                }, 4000);
+            }
         }
 
         function salvarConfig() {
             const pixKey = document.getElementById('pixKey').value.trim();
             const palavraChave = document.getElementById('palavraChave').value.trim();
-
             if (!pixKey) { mostrarAlerta('Chave PIX obrigatória', false); return; }
             if (!palavraChave) { mostrarAlerta('Palavra-chave obrigatória', false); return; }
 
@@ -662,22 +1107,18 @@
                 pixRecipientName: document.getElementById('pixRecipientName').value.trim(),
                 pixCity: document.getElementById('pixCity').value.trim().toUpperCase(),
                 palavraChave,
-                painelPassword: document.getElementById('painelPassword').value.trim() || '1234',
                 qrcodeImage: qrcodeImageData
             };
-
-            localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(novaConfig));
-            CONFIG = novaConfig;
-            
-            mostrarAlerta('Configurações salvas!', true);
+            localStorage.setItem(STORAGE.CONFIG, JSON.stringify(novaConfig));
+            config = novaConfig;
+            mostrarAlerta('Configurações salvas com sucesso!', true);
         }
 
         function mostrarAlerta(mensagem, sucesso) {
             const alertBox = document.getElementById('alertBox');
             alertBox.textContent = mensagem;
             alertBox.className = 'alert ' + (sucesso ? 'alert-success' : 'alert-error');
-            alertBox.style.display = 'block';
-            setTimeout(() => alertBox.style.display = 'none', 4000);
+            setTimeout(() => alertBox.className = 'alert', 4000);
         }
 
         init();
