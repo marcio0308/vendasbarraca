@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#1a56db">
+    <title>FoodFlow | Caixa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #1a56db;
+            --primary-dark: #1e40af;
+            --primary-light: #3b82f6;
+            --primary-bg: #eff6ff;
+            --success: #059669;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --canceled: #6b7280;
+            --text: #111827;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --bg: #f3f4f6;
+            --card: #ffffff;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        .header {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-header {
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            transition: all 0.2s;
+        }
+
+        .btn-header:active {
+            transform: scale(0.96);
+            background: var(--primary-bg);
+        }
+
+        .btn-header.ativo {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
+            color: var(--primary-dark);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:active {
+            background: var(--primary-dark);
+            transform: scale(0.97);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:active {
+            background: #047857;
+            transform: scale(0.97);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:active {
+            background: #b91c1c;
+            transform: scale(0.97);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            border: 2px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-secondary:active {
+            background: var(--border);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 2000;
+            animation: toastAnim 0.25s ease;
+            box-shadow: var(--shadow-lg);
+            white-space: nowrap;
+        }
+
+        @keyframes toastAnim {
+            from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* ========== CARDS DE PEDIDOS ========== */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .pedido-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .pedido-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        .pedido-card.selecionado {
+            border-color: var(--primary);
+            background: var(--primary-bg);
+        }
+
+        .pedido-card .numero-destaque {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 14px;
+            padding: 12px;
+            text-align: center;
+            color: white;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .pedido-card .numero-destaque .label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            display: block;
+        }
+
+        .pedido-card .resumo {
+            text-align: center;
+        }
+
+        .pedido-card .resumo .cliente {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .pedido-card .resumo .total {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .pedido-card .resumo .itens-resumo {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .pedido-card .status-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--warning);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* ========== DETALHES EXPANDIDOS ========== */
+        .detalhes-expandido {
+            display: none;
+            background: var(--bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 16px;
+            width: 100%;
+        }
+
+        .detalhes-expandido.ativo {
+            display: block;
+        }
+
+        .detalhes-expandido .detalhes-items {
+            margin: 12px 0;
+            padding: 12px;
+            background: var(--card);
+            border-radius: 12px;
+        }
+
+        .detalhes-expandido .detalhes-items div {
+            font-size: 13px;
+            padding: 4px 0;
+        }
+
+        .detalhes-expandido .total-destaque {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary);
+            text-align: right;
+            margin-top: 12px;
+        }
+
+        .detalhes-expandido .payment-buttons {
+            display: flex;
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .detalhes-expandido .payment-buttons button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-pix {
+            background: #e8f5e9;
+            border: 2px solid var(--success);
+            color: var(--success);
+        }
+
+        .btn-pix:active {
+            transform: scale(0.97);
+        }
+
+        .btn-dinheiro {
+            background: #fff3e0;
+            border: 2px solid var(--warning);
+            color: #856404;
+        }
+
+        .btn-dinheiro:active {
+            transform: scale(0.97);
+        }
+
+        .btn-cartao {
+            background: #e3f2fd;
+            border: 2px solid var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .btn-cartao:active {
+            transform: scale(0.97);
+        }
+
+        .detalhes-expandido .acoes-pedido {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .detalhes-expandido .acoes-pedido .btn {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .qrcode-container {
+            display: flex;
+            justify-content: center;
+            margin: 16px 0;
+        }
+
+        .pix-code-box {
+            background: var(--bg);
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 9px;
+            word-break: break-all;
+            margin: 12px 0;
+        }
+
+        .empty-list {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+            grid-column: 1 / -1;
+        }
+
+        /* ========== RELATÓRIO ========== */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .relatorio-filtros {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .relatorio-filtros input,
+        .relatorio-filtros select {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 40px;
+            font-size: 13px;
+            background: var(--bg);
+        }
+
+        .relatorio-filtros input:focus,
+        .relatorio-filtros select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .relatorio-tabela {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .relatorio-tabela th,
+        .relatorio-tabela td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+        }
+
+        .relatorio-tabela th {
+            font-weight: 700;
+            color: var(--text-light);
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .relatorio-tabela .total-geral {
+            background: var(--primary-bg);
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>FoodFlow | Caixa</h1>
+            <div class="header-buttons">
+                <button class="btn-header ativo" id="tabBtnPendentes" onclick="switchTab('pendentes')">Pendentes</button>
+                <button class="btn-header" id="tabBtnRelatorio" onclick="switchTab('relatorio')">Relatório</button>
+            </div>
+        </div>
+
+        <!-- ABA PENDENTES -->
+        <div id="tabPendentes" class="tab-content active">
+            <div class="card">
+                <h2>Pedidos Aguardando Pagamento</h2>
+                <div class="cards-container" id="pedidosContainer">
+                    <div class="empty-list">Carregando pedidos...</div>
+                </div>
+            </div>
+
+            <!-- Detalhes do Pedido Selecionado (abaixo do card) -->
+            <div id="detalhesContainer" style="display: none;">
+                <div class="card">
+                    <h2>Detalhes do Pedido</h2>
+                    <div id="detalhesConteudo"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA RELATÓRIO -->
+        <div id="tabRelatorio" class="tab-content">
+            <div class="card">
+                <h2>Relatório de Vendas</h2>
+                <div class="relatorio-filtros">
+                    <input type="date" id="relatorioDataInicio">
+                    <input type="date" id="relatorioDataFim">
+                    <button class="btn btn-primary" onclick="gerarRelatorio()">Filtrar</button>
+                </div>
+                <div id="relatorioResultado"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script>
+        const STORAGE_KEYS = {
+            ORDERS: 'evento_pedidos',
+            CONFIG: 'configFeira'
+        };
+
+        let pedidos = [];
+        let pedidoSelecionado = null;
+        let qrcodeObj = null;
+        let config = JSON.parse(localStorage.getItem(STORAGE_KEYS.CONFIG) || '{}');
+
+        // ==================== TABS ====================
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.btn-header').forEach(b => b.classList.remove('ativo'));
+
+            if (tab === 'pendentes') {
+                document.getElementById('tabPendentes').classList.add('active');
+                document.getElementById('tabBtnPendentes').classList.add('ativo');
+                carregarPedidos();
+            } else {
+                document.getElementById('tabRelatorio').classList.add('active');
+                document.getElementById('tabBtnRelatorio').classList.add('ativo');
+                gerarRelatorio();
+            }
+        }
+
+        // ==================== PEDIDOS EM CARDS ====================
+        function carregarPedidos() {
+            pedidos = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
+            const pendentes = pedidos.filter(p => p.status === 'awaiting_payment');
+            const container = document.getElementById('pedidosContainer');
+
+            if (pendentes.length === 0) {
+                container.innerHTML = '<div class="empty-list">Nenhum pedido aguardando pagamento</div>';
+                document.getElementById('detalhesContainer').style.display = 'none';
+                pedidoSelecionado = null;
+                return;
+            }
+
+            // Ordena por data de criação (mais antigo primeiro - ordem de chegada)
+            pendentes.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+            // Limita a 3 cards (primeiros da fila)
+            const exibir = pendentes.slice(0, 3);
+            const restantes = pendentes.length - exibir.length;
+
+            let html = '';
+            exibir.forEach((pedido, index) => {
+                const isSelecionado = pedidoSelecionado && pedidoSelecionado.orderId === pedido.orderId;
+                const itensResumo = pedido.items.map(i => `${i.qty}x ${i.name}`).join(', ');
+                const totalItens = pedido.items.reduce((s, i) => s + i.qty, 0);
+
+                html += `
+                    <div class="pedido-card ${isSelecionado ? 'selecionado' : ''}" 
+                         onclick="selecionarPedido('${pedido.orderId}')" 
+                         data-id="${pedido.orderId}">
+                        <div class="numero-destaque">
+                            <span class="label">NUMERO</span>
+                            ${pedido.numeroAtendimento || '---'}
+                        </div>
+                        <div class="resumo">
+                            <div class="cliente">${pedido.customerName}</div>
+                            <div class="total">R$ ${pedido.total.toFixed(2)}</div>
+                            <div class="itens-resumo">${totalItens} itens</div>
+                        </div>
+                        <div class="status-badge">Aguardando</div>
+                    </div>
+                `;
+            });
+
+            if (restantes > 0) {
+                html += `
+                    <div class="pedido-card" style="border: 2px dashed var(--border); cursor: default; opacity: 0.6;">
+                        <div style="text-align:center; padding: 20px;">
+                            <div style="font-size: 24px; font-weight: 700; color: var(--text-light);">+${restantes}</div>
+                            <div style="font-size: 12px; color: var(--text-light);">pedidos na fila</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+
+            // Se havia um pedido selecionado que ainda está na lista, mantém os detalhes
+            if (pedidoSelecionado) {
+                const aindaExiste = pedidos.some(p => p.orderId === pedidoSelecionado.orderId && p.status === 'awaiting_payment');
+                if (!aindaExiste) {
+                    pedidoSelecionado = null;
+                    document.getElementById('detalhesContainer').style.display = 'none';
+                } else {
+                    // Atualiza os dados do pedido selecionado
+                    const atualizado = pedidos.find(p => p.orderId === pedidoSelecionado.orderId);
+                    if (atualizado) pedidoSelecionado = atualizado;
+                    mostrarDetalhes();
+                }
+            }
+        }
+
+        // ==================== SELECIONAR PEDIDO ====================
+        function selecionarPedido(orderId) {
+            pedidoSelecionado = pedidos.find(p => p.orderId === orderId);
+            if (!pedidoSelecionado) return;
+
+            // Atualiza a classe selecionado nos cards
+            document.querySelectorAll('.pedido-card').forEach(card => {
+                card.classList.remove('selecionado');
+                if (card.getAttribute('data-id') === orderId) {
+                    card.classList.add('selecionado');
+                }
+            });
+
+            mostrarDetalhes();
+        }
+
+        // ==================== MOSTRAR DETALHES ====================
+        function mostrarDetalhes() {
+            if (!pedidoSelecionado) {
+                document.getElementById('detalhesContainer').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('detalhesContainer').style.display = 'block';
+
+            const itemsHtml = pedidoSelecionado.items.map(item =>
+                `<div>${item.qty}x ${item.name} — R$ ${(item.price * item.qty).toFixed(2)}</div>`
+            ).join('');
+
+            const time = new Date(pedidoSelecionado.createdAt);
+            const timeStr = time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            const dateStr = time.toLocaleDateString('pt-BR');
+
+            document.getElementById('detalhesConteudo').innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+                    <div>
+                        <strong style="font-size: 18px;">Numero: ${pedidoSelecionado.numeroAtendimento}</strong>
+                        <div style="font-size: 13px; color: var(--text-light);">${pedidoSelecionado.orderId}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 13px; color: var(--text-light);">${dateStr} as ${timeStr}</div>
+                        <div style="font-size: 13px; color: var(--text-light);">Cliente: ${pedidoSelecionado.customerName}</div>
+                    </div>
+                </div>
+
+                <div class="detalhes-items">
+                    <strong>Itens:</strong><br>
+                    ${itemsHtml}
+                </div>
+
+                <div class="total-destaque">Total: R$ ${pedidoSelecionado.total.toFixed(2)}</div>
+
+                <div id="pagamentoArea">
+                    <div class="payment-buttons">
+                        <button class="btn-pix" onclick="processarPagamento('pix')">PIX</button>
+                        <button class="btn-dinheiro" onclick="processarPagamento('dinheiro')">DINHEIRO</button>
+                        <button class="btn-cartao" onclick="processarPagamento('cartao')">CARTAO</button>
+                    </div>
+                    <div id="qrcodeContainer" style="display: flex; justify-content: center; margin: 16px 0;"></div>
+                    <div id="pixCodeBox" class="pix-code-box" style="display: none;"></div>
+                    <div class="acoes-pedido">
+                        <button class="btn btn-success" onclick="confirmarPagamento()">Confirmar Pagamento</button>
+                        <button class="btn btn-danger" onclick="cancelarPedido()">Cancelar Venda</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==================== PROCESSAR PAGAMENTO ====================
+        function processarPagamento(metodo) {
+            if (!pedidoSelecionado) {
+                alert('Selecione um pedido primeiro');
+                return;
+            }
+
+            pedidoSelecionado.metodoPagamento = metodo;
+
+            const qrcodeContainer = document.getElementById('qrcodeContainer');
+            const pixCodeBox = document.getElementById('pixCodeBox');
+
+            // Limpa QR e código anteriores
+            qrcodeContainer.innerHTML = '';
+            pixCodeBox.style.display = 'none';
+            pixCodeBox.textContent = '';
+
+            if (metodo === 'pix') {
+                const nomeLimpo = (config.pixRecipientName || 'FoodFlow').substring(0, 25).toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                const cidadeLimpa = (config.pixCity || 'SAO PAULO').substring(0, 15).toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                const chave = config.pixKey || '00020101021226850014br.gov.bcb.pix0136e5e5e5e5-e5e5-e5e5-e5e5-e5e5e5e5e5e552040000530398654040.005802BR5915FoodFlow6009SAO PAULO62070503***6304B8D3';
+                const total = pedidoSelecionado.total;
+
+                const payload = [
+                    '000201', '010212', `26580014br.gov.bcb.pix0136${chave}`,
+                    '52040000', '5303986', `54${String(total.toFixed(2)).length}${total.toFixed(2)}`,
+                    '5802BR', `59${String(nomeLimpo.length).padStart(2, '0')}${nomeLimpo}`,
+                    `60${String(cidadeLimpa.length).padStart(2, '0')}${cidadeLimpa}`, '62070503***'
+                ].join('');
+                const crcPayload = payload + '6304';
+                const pixPayload = crcPayload + calcularCRC16(crcPayload).toUpperCase();
+
+                pixCodeBox.textContent = pixPayload;
+                pixCodeBox.style.display = 'block';
+
+                try {
+                    qrcodeObj = new QRCode(qrcodeContainer, {
+                        text: pixPayload,
+                        width: 180,
+                        height: 180,
+                        colorDark: '#1a56db',
+                        colorLight: '#ffffff',
+                        correctLevel: QRCode.CorrectLevel.M
+                    });
+                } catch (e) {
+                    qrcodeContainer.innerHTML = '<p style="color:red;">Erro ao gerar QR Code</p>';
+                }
+            }
+
+            mostrarToast('Pagamento selecionado: ' + metodo.toUpperCase());
+        }
+
+        function calcularCRC16(payload) {
+            let crc = 0xFFFF;
+            for (let i = 0; i < payload.length; i++) {
+                crc ^= payload.charCodeAt(i) << 8;
+                for (let j = 0; j < 8; j++) {
+                    crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) & 0xFFFF : (crc << 1) & 0xFFFF;
+                }
+            }
+            return crc.toString(16).padStart(4, '0');
+        }
+
+        // ==================== CONFIRMAR PAGAMENTO ====================
+        function confirmarPagamento() {
+            if (!pedidoSelecionado) {
+                alert('Selecione um pedido primeiro');
+                return;
+            }
+
+            if (!pedidoSelecionado.metodoPagamento) {
+                alert('Selecione uma forma de pagamento');
+                return;
+            }
+
+            let pedidosAtualizados = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
+            const index = pedidosAtualizados.findIndex(p => p.orderId === pedidoSelecionado.orderId);
+
+            if (index !== -1) {
+                pedidosAtualizados[index].status = 'paid';
+                pedidosAtualizados[index].paidAt = new Date().toISOString();
+                localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(pedidosAtualizados));
+            }
+
+            mostrarToast('Pagamento confirmado para o pedido ' + pedidoSelecionado.orderId);
+
+            pedidoSelecionado = null;
+            document.getElementById('detalhesContainer').style.display = 'none';
+            carregarPedidos();
+        }
+
+        // ==================== CANCELAR VENDA ====================
+        function cancelarPedido() {
+            if (!pedidoSelecionado) {
+                alert('Selecione um pedido primeiro');
+                return;
+            }
+
+            if (!confirm('Tem certeza que deseja cancelar este pedido? O pedido sera removido da lista de pendentes.')) {
+                return;
+            }
+
+            let pedidosAtualizados = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
+            const index = pedidosAtualizados.findIndex(p => p.orderId === pedidoSelecionado.orderId);
+
+            if (index !== -1) {
+                pedidosAtualizados.splice(index, 1);
+                localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(pedidosAtualizados));
+            }
+
+            mostrarToast('Pedido ' + pedidoSelecionado.orderId + ' cancelado e removido');
+
+            pedidoSelecionado = null;
+            document.getElementById('detalhesContainer').style.display = 'none';
+            carregarPedidos();
+        }
+
+        // ==================== RELATÓRIO ====================
+        function gerarRelatorio() {
+            const dataInicio = document.getElementById('relatorioDataInicio').value;
+            const dataFim = document.getElementById('relatorioDataFim').value;
+
+            let pedidosFinalizados = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
+            pedidosFinalizados = pedidosFinalizados.filter(p => p.status === 'paid');
+
+            if (dataInicio) {
+                pedidosFinalizados = pedidosFinalizados.filter(p => new Date(p.paidAt) >= new Date(dataInicio));
+            }
+            if (dataFim) {
+                pedidosFinalizados = pedidosFinalizados.filter(p => new Date(p.paidAt) <= new Date(dataFim + 'T23:59:59'));
+            }
+
+            pedidosFinalizados.sort((a, b) => new Date(b.paidAt) - new Date(a.paidAt));
+
+            const container = document.getElementById('relatorioResultado');
+
+            if (pedidosFinalizados.length === 0) {
+                container.innerHTML = '<div class="empty-list">Nenhuma venda encontrada</div>';
+                return;
+            }
+
+            let totalGeral = 0;
+            let totalItens = 0;
+
+            let html = '<table class="relatorio-tabela">';
+            html += '<tr><th>Pedido</th><th>Numero</th><th>Cliente</th><th>Itens</th><th>Total</th><th>Pagamento</th><th>Data</th></tr>';
+
+            pedidosFinalizados.forEach(p => {
+                const itensResumo = p.items.map(i => `${i.qty}x ${i.name}`).join(', ');
+                const data = new Date(p.paidAt);
+                const dataStr = data.toLocaleDateString() + ' ' + data.toLocaleTimeString([], { hour: '2-digit',
+                    minute: '2-digit' });
+                totalGeral += p.total;
+                p.items.forEach(i => totalItens += i.qty);
+
+                let metodo = p.metodoPagamento || '---';
+                if (metodo === 'pix') metodo = 'PIX';
+                else if (metodo === 'dinheiro') metodo = 'Dinheiro';
+                else if (metodo === 'cartao') metodo = 'Cartao';
+
+                html += `<tr>
+                    <td>${p.orderId}</td>
+                    <td>${p.numeroAtendimento || '---'}</td>
+                    <td>${p.customerName}</td>
+                    <td>${itensResumo}</td>
+                    <td>R$ ${p.total.toFixed(2)}</td>
+                    <td>${metodo}</td>
+                    <td>${dataStr}</td>
+                </tr>`;
+            });
+
+            html += `<tr class="total-geral">
+                <td colspan="3"><strong>TOTAL GERAL</strong></td>
+                <td><strong>${totalItens} itens</strong></td>
+                <td><strong>R$ ${totalGeral.toFixed(2)}</strong></td>
+                <td colspan="2">${pedidosFinalizados.length} vendas</td>
+            </tr>`;
+
+            html += '</table>';
+            container.innerHTML = html;
+        }
+
+        // ==================== TOAST ====================
+        function mostrarToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+
+        // ==================== INICIALIZAÇÃO ====================
+        setInterval(carregarPedidos, 3000);
+        carregarPedidos();
+    </script>
+</body>
+</html>
